@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ひらがな Quiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=DM+Mono:wght@400;500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0f0e17;
@@ -18,12 +18,13 @@
     --correct: #4caf82;
     --wrong: #e05c6a;
     --radius: 14px;
+    --ui-font: 'Nunito', sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'DM Mono', monospace;
+    font-family: var(--ui-font);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -82,10 +83,10 @@
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
-    font-family: 'DM Mono', monospace;
+    font-family: var(--ui-font);
     font-size: 0.95rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    font-weight: 700;
+    letter-spacing: 0.03em;
     transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
   }
   .btn:active { transform: scale(0.96); }
@@ -113,8 +114,10 @@
   }
 
   .settings-title {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
+    font-family: var(--ui-font);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 16px;
@@ -154,10 +157,10 @@
 
   /* hiragana grid */
   .grid-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
+    font-family: var(--ui-font);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
     color: var(--muted);
-    text-transform: uppercase;
     margin-bottom: 12px;
     margin-top: 4px;
   }
@@ -200,24 +203,124 @@
 
   .kana-group-label {
     width: 100%;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
+    font-family: var(--ui-font);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     color: var(--accent);
     text-transform: uppercase;
-    margin-top: 10px;
-    margin-bottom: 2px;
+    margin-top: 14px;
+    margin-bottom: 4px;
   }
 
   .grid-actions { display: flex; gap: 10px; margin-top: 12px; }
+
+  /* ── VIEW TOGGLE ── */
+  .kana-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+  }
+  .view-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 0;
+    color: var(--accent);
+  }
+  .view-btn:hover { border-color: var(--accent2); }
+  .view-btn.active {
+    background: rgba(124,106,247,0.2);
+    border-color: var(--accent2);
+  }
+  .view-btn svg { display: block; }
+
+  /* compact mode — table layout, one row per group */
+  .kana-grid.compact {
+    display: block;
+    gap: 0;
+  }
+  .kana-grid.compact .kana-group-label { display: none; }
+  .kana-row {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+  .kana-grid.compact .kana-row { display: flex; }
+  .kana-row-label {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1rem;
+    color: var(--accent);
+    width: 28px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .kana-grid.compact .kana-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .kana-grid.compact .kana-btn .k { font-size: 1.15rem; }
+  .kana-grid.compact .kana-btn .r { display: none; }
+
+  /* ── SIDE BY SIDE CARDS ── */
+  .settings-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+  .settings-row .settings-card {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── TOOLTIP ── */
+  .has-tooltip { position: relative; }
+  .has-tooltip::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2e2c4a;
+    color: var(--text);
+    font-family: var(--ui-font);
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    padding: 4px 9px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 10;
+  }
+  .has-tooltip:hover::after { opacity: 1; }
   .btn-tiny {
     padding: 6px 14px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--muted);
     border-radius: 8px;
     cursor: pointer;
-    font-family: 'DM Mono', monospace;
+    font-family: var(--ui-font);
     transition: 0.15s;
   }
   .btn-tiny:hover { color: var(--text); border-color: var(--accent2); }
@@ -364,9 +467,10 @@
     border: none;
     color: var(--muted);
     cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
+    font-family: var(--ui-font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     padding: 6px 0;
     display: flex;
     align-items: center;
@@ -378,7 +482,8 @@
 
   .warn {
     color: var(--wrong);
-    font-size: 0.82rem;
+    font-size: 0.88rem;
+    font-weight: 600;
     text-align: center;
     padding: 10px 16px;
     background: rgba(224,92,106,0.1);
@@ -387,6 +492,32 @@
     display: none;
   }
   .warn.show { display: block; }
+
+  /* ── LANG TOGGLE ── */
+  .lang-toggle {
+    display: flex;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    width: fit-content;
+  }
+  .lang-btn {
+    padding: 8px 22px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: var(--ui-font);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .lang-btn.active {
+    background: var(--accent2);
+    color: var(--text);
+  }
 </style>
 </head>
 <body>
@@ -398,43 +529,80 @@
 <!-- HOME -->
 <div class="screen active" id="screen-home">
   <div class="home-title">Learn<br><em>Hiragana</em></div>
-  <p class="home-sub">Тренируй японскую азбуку — иероглиф за иероглифом</p>
+  <p class="home-sub" data-t="home_sub">Тренируй японскую азбуку — иероглиф за иероглифом</p>
   <div class="btn-group">
-    <button class="btn btn-primary" onclick="startQuiz()">▶ Начать тест</button>
-    <button class="btn btn-secondary" onclick="showSettings()">⚙ Настройки</button>
+    <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="start">Начать тест</span></button>
+    <button class="btn btn-secondary" onclick="showSettings()">⚙ <span data-t="settings">Настройки</span></button>
   </div>
 </div>
 
 <!-- SETTINGS -->
 <div class="screen" id="screen-settings">
-  <button class="back-btn" onclick="showHome()">← назад</button>
+  <button class="back-btn" onclick="showHome()">← <span data-t="back">назад</span></button>
 
-  <div class="settings-card">
-    <div class="settings-title">Вариантов ответа</div>
-    <div class="range-row">
-      <input type="range" id="opt-count" min="2" max="10" value="4"
-             oninput="document.getElementById('opt-val').textContent=this.value">
-      <div class="range-val" id="opt-val">4</div>
+  <div class="settings-row">
+    <div class="settings-card">
+      <div class="settings-title" data-t="lang_title">Язык интерфейса</div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="lang-ru" onclick="setLang('ru')">Русский</button>
+        <button class="lang-btn" id="lang-en" onclick="setLang('en')">English</button>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-title" data-t="opts_title">Вариантов ответа</div>
+      <div class="range-row">
+        <input type="range" id="opt-count" min="2" max="10" value="4"
+               oninput="document.getElementById('opt-val').textContent=this.value">
+        <div class="range-val" id="opt-val">4</div>
+      </div>
     </div>
   </div>
 
   <div class="settings-card">
-    <div class="settings-title">Активные иероглифы</div>
-    <p class="grid-label">Нажми чтобы включить / выключить</p>
+    <div class="kana-card-header">
+      <div class="settings-title" data-t="kana_title" style="margin-bottom:0">Активные иероглифы</div>
+      <div class="view-toggle">
+        <!-- Normal/expanded: 4 large squares — DEFAULT -->
+        <button class="view-btn active has-tooltip" id="view-normal" onclick="setView('normal')" data-tip="Подробно" data-t-tip="view_expanded">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1"  y="1"  width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+            <rect x="11" y="1"  width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+            <rect x="1"  y="11" width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+            <rect x="11" y="11" width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </button>
+        <!-- Compact: 9 small squares (rows layout) -->
+        <button class="view-btn has-tooltip" id="view-compact" onclick="setView('compact')" data-tip="Компактно" data-t-tip="view_compact">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1"   y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="7.5" y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="14"  y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="1"   y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="7.5" y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="14"  y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="1"   y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="7.5" y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+            <rect x="14"  y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <p class="grid-label" data-t="kana_hint" style="margin-top:12px">Нажми чтобы включить / выключить</p>
     <div class="kana-grid" id="kana-grid"></div>
     <div class="grid-actions">
-      <button class="btn-tiny" onclick="toggleAll(true)">Выбрать все</button>
-      <button class="btn-tiny" onclick="toggleAll(false)">Снять все</button>
+      <button class="btn-tiny" data-t="select_all" onclick="toggleAll(true)">Выбрать все</button>
+      <button class="btn-tiny" data-t="deselect_all" onclick="toggleAll(false)">Снять все</button>
     </div>
   </div>
 
-  <div class="warn" id="warn-min">Нужно минимум 3 активных иероглифа</div>
-  <button class="btn btn-primary" onclick="startQuiz()">▶ Начать тест</button>
+  <div class="warn" id="warn-min" data-t="warn_min">Нужно минимум 3 активных иероглифа</div>
+  <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="start">Начать тест</span></button>
 </div>
 
 <!-- QUIZ -->
 <div class="screen" id="screen-quiz">
-  <button class="back-btn" onclick="showHome()">← выйти</button>
+  <button class="back-btn" onclick="showHome()">← <span data-t="exit">выйти</span></button>
   <div class="quiz-progress"><div class="quiz-progress-bar" id="q-bar"></div></div>
   <div class="quiz-meta">
     <span id="q-num">1 / 10</span>
@@ -450,11 +618,11 @@
 <!-- RESULT -->
 <div class="screen" id="screen-result">
   <div class="result-big" id="res-emoji">🎉</div>
-  <div class="result-label">РЕЗУЛЬТАТ</div>
+  <div class="result-label" data-t="result_label">РЕЗУЛЬТАТ</div>
   <div class="result-score" id="res-score"></div>
   <div class="btn-group">
-    <button class="btn btn-primary" onclick="startQuiz()">▶ Ещё раз</button>
-    <button class="btn btn-secondary" onclick="showHome()">Меню</button>
+    <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="again">Ещё раз</span></button>
+    <button class="btn btn-secondary" onclick="showHome()"><span data-t="menu">Меню</span></button>
   </div>
 </div>
 
@@ -474,46 +642,157 @@ const HIRAGANA = [
   ["わ行", "わ","wa"], ["わ行","を","wo"], ["ん","ん","n"],
 ];
 
-// ── STATE ──────────────────────────────────────────────────
+// ── TRANSLATIONS ──────────────────────────────────────────
+const T = {
+  ru: {
+    home_sub:    'Тренируй японскую азбуку — иероглиф за иероглифом',
+    start:       'Начать тест',
+    settings:    'Настройки',
+    back:        'назад',
+    exit:        'выйти',
+    again:       'Ещё раз',
+    menu:        'Меню',
+    result_label:'РЕЗУЛЬТАТ',
+    lang_title:  'Язык интерфейса',
+    opts_title:  'Вариантов ответа',
+    kana_title:  'Активные иероглифы',
+    kana_hint:   'Нажми чтобы включить / выключить',
+    select_all:  'Выбрать все',
+    deselect_all:'Снять все',
+    warn_min:    'Нужно минимум 3 активных иероглифа',
+    hint_pick_romaji: 'выбери транскрипцию',
+    hint_pick_kana:   'выбери иероглиф',
+    score_of:    (s,t) => `<strong>${s}</strong> из <strong>${t}</strong> верно`,
+    view_expanded: 'Подробно',
+    view_compact:  'Компактно',
+  },
+  en: {
+    home_sub:    'Train the Japanese alphabet — one character at a time',
+    start:       'Start quiz',
+    settings:    'Settings',
+    back:        'back',
+    exit:        'exit',
+    again:       'Try again',
+    menu:        'Menu',
+    result_label:'RESULT',
+    lang_title:  'Interface language',
+    opts_title:  'Answer options',
+    kana_title:  'Active characters',
+    kana_hint:   'Tap to enable / disable',
+    select_all:  'Select all',
+    deselect_all:'Deselect all',
+    warn_min:    'Need at least 3 active characters',
+    hint_pick_romaji: 'choose the transcription',
+    hint_pick_kana:   'choose the character',
+    score_of:    (s,t) => `<strong>${s}</strong> out of <strong>${t}</strong> correct`,
+    view_expanded: 'Expanded',
+    view_compact:  'Compact',
+  }
+};
+
+let lang = 'ru';
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('hq_lang', l);
+  document.getElementById('lang-ru').classList.toggle('active', l === 'ru');
+  document.getElementById('lang-en').classList.toggle('active', l === 'en');
+  // update all data-t text elements
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.dataset.t;
+    if (T[l][key] && typeof T[l][key] === 'string') el.textContent = T[l][key];
+  });
+  // update tooltip data-tip attributes
+  document.querySelectorAll('[data-t-tip]').forEach(el => {
+    const key = el.dataset.tTip;
+    if (T[l][key]) el.dataset.tip = T[l][key];
+  });
+}
+
+function t(key, ...args) {
+  const val = T[lang][key];
+  return typeof val === 'function' ? val(...args) : val;
+}
+
+
 let active = new Set(HIRAGANA.map((_,i)=>i));
 let quizList = [], qIdx = 0, score = 0, totalQ = 10, optCount = 4;
 
 function save() {
   localStorage.setItem('hq_active', JSON.stringify([...active]));
   localStorage.setItem('hq_opts', document.getElementById('opt-count').value);
+  localStorage.setItem('hq_lang', lang);
 }
 function load() {
   const a = localStorage.getItem('hq_active');
   if (a) active = new Set(JSON.parse(a));
   const o = localStorage.getItem('hq_opts');
   if (o) { document.getElementById('opt-count').value = o; document.getElementById('opt-val').textContent = o; }
+  const v = localStorage.getItem('hq_view');
+  if (v) setView(v);
+  const l = localStorage.getItem('hq_lang');
+  if (l) setLang(l);
 }
 
 // ── GRID ──────────────────────────────────────────────────
+// Short row labels for compact mode
+const ROW_SHORT = {
+  "あ行":"あ", "か行":"か", "さ行":"さ", "た行":"た", "な行":"な",
+  "は行":"は", "ま行":"ま", "や行":"や", "ら行":"ら", "わ行":"わ", "ん":"ん"
+};
+
+function makeKanaBtn(i) {
+  const [, k, r] = HIRAGANA[i];
+  const btn = document.createElement('div');
+  btn.className = 'kana-btn ' + (active.has(i) ? 'on' : 'off');
+  btn.innerHTML = `<span class="k">${k}</span><span class="r">${r}</span>`;
+  btn.dataset.idx = i;
+  btn.onclick = () => toggleKana(i, btn);
+  return btn;
+}
+
 function buildGrid() {
   const grid = document.getElementById('kana-grid');
   grid.innerHTML = '';
-  let lastGroup = null;
-  HIRAGANA.forEach(([grp, k, r], i) => {
-    if (grp !== lastGroup) {
+  grid.classList.toggle('compact', viewMode === 'compact');
+
+  if (viewMode === 'compact') {
+    // Group by row, render as horizontal rows with label
+    const groups = [];
+    let cur = null;
+    HIRAGANA.forEach(([grp, k, r], i) => {
+      if (!cur || cur.grp !== grp) { cur = { grp, items: [] }; groups.push(cur); }
+      cur.items.push(i);
+    });
+    groups.forEach(({ grp, items }) => {
+      const row = document.createElement('div');
+      row.className = 'kana-row';
       const lbl = document.createElement('div');
-      lbl.className = 'kana-group-label';
-      lbl.textContent = grp;
-      grid.appendChild(lbl);
-      lastGroup = grp;
-    }
-    const btn = document.createElement('div');
-    btn.className = 'kana-btn ' + (active.has(i) ? 'on' : 'off');
-    btn.innerHTML = `<span class="k">${k}</span><span class="r">${r}</span>`;
-    btn.dataset.idx = i;
-    btn.onclick = () => toggleKana(i, btn);
-    grid.appendChild(btn);
-  });
+      lbl.className = 'kana-row-label';
+      lbl.textContent = ROW_SHORT[grp] || grp;
+      row.appendChild(lbl);
+      items.forEach(i => row.appendChild(makeKanaBtn(i)));
+      grid.appendChild(row);
+    });
+  } else {
+    // Normal: group labels + flat buttons
+    let lastGroup = null;
+    HIRAGANA.forEach(([grp, k, r], i) => {
+      if (grp !== lastGroup) {
+        const lbl = document.createElement('div');
+        lbl.className = 'kana-group-label';
+        lbl.textContent = grp;
+        grid.appendChild(lbl);
+        lastGroup = grp;
+      }
+      grid.appendChild(makeKanaBtn(i));
+    });
+  }
 }
 
 function toggleKana(i, btn) {
-  if (active.has(i)) { active.delete(i); btn.className='kana-btn off'; }
-  else { active.add(i); btn.className='kana-btn on'; }
+  if (active.has(i)) { active.delete(i); btn.className = 'kana-btn off'; }
+  else { active.add(i); btn.className = 'kana-btn on'; }
   save();
 }
 
@@ -521,6 +800,19 @@ function toggleAll(on) {
   if (on) HIRAGANA.forEach((_,i)=>active.add(i));
   else active.clear();
   buildGrid(); save();
+}
+
+// ── VIEW MODE ──────────────────────────────────────────────
+let viewMode = 'normal';
+
+function setView(mode) {
+  viewMode = mode;
+  localStorage.setItem('hq_view', mode);
+  document.getElementById('view-normal').classList.toggle('active', mode === 'normal');
+  document.getElementById('view-compact').classList.toggle('active', mode === 'compact');
+  // rebuild grid if settings screen is open
+  const grid = document.getElementById('kana-grid');
+  if (grid.children.length > 0) buildGrid();
 }
 
 // ── SCREENS ──────────────────────────────────────────────
@@ -564,10 +856,10 @@ function renderQ() {
 
   if (showKana) {
     display.innerHTML = `<div class="quiz-kana">${kana}</div>`;
-    hint.textContent = 'выбери транскрипцию';
+    hint.textContent = t('hint_pick_romaji');
   } else {
     display.innerHTML = `<div class="quiz-romaji">${romaji}</div>`;
-    hint.textContent = 'выбери иероглиф';
+    hint.textContent = t('hint_pick_kana');
   }
 
   // build options: correct + random wrong
@@ -624,7 +916,7 @@ function showResult() {
   let emoji = pct >= 80 ? '🎉' : pct >= 50 ? '😊' : '😅';
   document.getElementById('res-emoji').textContent = emoji;
   document.getElementById('res-score').innerHTML =
-    `<strong>${score}</strong> из <strong>${totalQ}</strong> верно<br>${pct}%`;
+    t('score_of', score, totalQ) + `<br>${pct}%`;
   show('screen-result');
 }
 
