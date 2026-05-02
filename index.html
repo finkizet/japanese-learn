@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ひらがな Quiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=DM+Mono:wght@400;500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<title>日本語 Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&family=Zen+Kurenaido&family=Kaisei+Decol:wght@400;700&family=DM+Mono:wght@400;500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0f0e17;
@@ -19,6 +19,7 @@
     --wrong: #e05c6a;
     --radius: 14px;
     --ui-font: 'Nunito', sans-serif;
+    --jp-font: 'Noto Serif JP', serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,7 +47,7 @@
   }
 
   .logo {
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--jp-font);
     font-size: 1.4rem;
     letter-spacing: 0.05em;
     color: var(--accent);
@@ -186,7 +187,7 @@
     user-select: none;
   }
 
-  .kana-btn .k { font-family: 'Noto Serif JP', serif; font-size: 1.3rem; line-height: 1; }
+  .kana-btn .k { font-family: var(--jp-font); font-size: 1.3rem; line-height: 1; }
   .kana-btn .r { font-size: 0.6rem; color: var(--muted); margin-top: 2px; letter-spacing: 0.03em; }
 
   .kana-btn.on {
@@ -261,7 +262,7 @@
   }
   .kana-grid.compact .kana-row { display: flex; }
   .kana-row-label {
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--jp-font);
     font-size: 1rem;
     color: var(--accent);
     width: 28px;
@@ -372,7 +373,7 @@
   }
 
   .quiz-kana {
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--jp-font);
     font-size: clamp(4rem, 15vw, 7rem);
     line-height: 1;
     color: var(--text);
@@ -412,7 +413,7 @@
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
     color: var(--text);
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--jp-font);
     font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.15s;
@@ -449,7 +450,7 @@
 
   /* results */
   .result-big {
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--jp-font);
     font-size: 5rem;
     line-height: 1;
     color: var(--accent);
@@ -518,17 +519,75 @@
     background: var(--accent2);
     color: var(--text);
   }
+
+  /* ── FONT PICKER ── */
+  .font-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .font-opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .font-opt:hover { border-color: var(--accent2); }
+  .font-opt.active {
+    background: rgba(124,106,247,0.15);
+    border-color: var(--accent2);
+  }
+  .font-opt-preview {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  .font-opt-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: var(--ui-font);
+  }
+  .font-opt.active .font-opt-label { color: var(--accent2); }
+
+  /* ── SECTION TOGGLE (hiragana / katakana) ── */
+  .section-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .section-btn {
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .section-btn.active {
+    background: rgba(124,106,247,0.18);
+    border-color: var(--accent2);
+    color: var(--text);
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">ひらがな<span>quiz</span></div>
+  <div class="logo">日本語<span>quiz</span></div>
 </header>
 
 <!-- HOME -->
 <div class="screen active" id="screen-home">
-  <div class="home-title">Learn<br><em>Hiragana</em></div>
+  <div class="home-title">Learn<br><em>Japanese</em></div>
   <p class="home-sub" data-t="home_sub">Тренируй японскую азбуку — иероглиф за иероглифом</p>
   <div class="btn-group">
     <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="start">Начать тест</span></button>
@@ -556,6 +615,22 @@
                oninput="document.getElementById('opt-val').textContent=this.value">
         <div class="range-val" id="opt-val">4</div>
       </div>
+    </div>
+  </div>
+
+  <div class="settings-row">
+    <div class="settings-card">
+      <div class="settings-title" data-t="q_count_title">Кол-во вопросов</div>
+      <div class="range-row">
+        <input type="range" id="q-count" min="10" max="30" value="10" step="5"
+               oninput="document.getElementById('q-count-val').textContent=this.value">
+        <div class="range-val" id="q-count-val">10</div>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-title" data-t="font_title">Шрифт</div>
+      <div class="font-options" id="font-options"></div>
     </div>
   </div>
 
@@ -589,6 +664,10 @@
       </div>
     </div>
     <p class="grid-label" data-t="kana_hint" style="margin-top:12px">Нажми чтобы включить / выключить</p>
+    <div class="section-toggle">
+      <button class="section-btn active" id="sec-hiragana" onclick="setSection('hiragana')">ひらがな</button>
+      <button class="section-btn" id="sec-katakana" onclick="setSection('katakana')">カタカナ</button>
+    </div>
     <div class="kana-grid" id="kana-grid"></div>
     <div class="grid-actions">
       <button class="btn-tiny" data-t="select_all" onclick="toggleAll(true)">Выбрать все</button>
@@ -629,18 +708,34 @@
 <script>
 // ── DATA ──────────────────────────────────────────────────
 const HIRAGANA = [
-  // group, kana, romaji
-  ["あ行", "あ","a"],  ["あ行","い","i"],  ["あ行","う","u"],  ["あ行","え","e"],  ["あ行","お","o"],
-  ["か行", "か","ka"], ["か行","き","ki"], ["か行","く","ku"], ["か行","け","ke"], ["か行","こ","ko"],
-  ["さ行", "さ","sa"], ["さ行","し","shi"],["さ行","す","su"], ["さ行","せ","se"], ["さ行","そ","so"],
-  ["た行", "た","ta"], ["た行","ち","chi"],["た行","つ","tsu"],["た行","て","te"], ["た行","と","to"],
-  ["な行", "な","na"], ["な行","に","ni"], ["な行","ぬ","nu"], ["な行","ね","ne"], ["な行","の","no"],
-  ["は行", "は","ha"], ["は行","ひ","hi"], ["は行","ふ","fu"], ["は行","へ","he"], ["は行","ほ","ho"],
-  ["ま行", "ま","ma"], ["ま行","み","mi"], ["ま行","む","mu"], ["ま行","め","me"], ["ま行","も","mo"],
-  ["や行", "や","ya"], ["や行","ゆ","yu"], ["や行","よ","yo"],
-  ["ら行", "ら","ra"], ["ら行","り","ri"], ["ら行","る","ru"], ["ら行","れ","re"], ["ら行","ろ","ro"],
-  ["わ行", "わ","wa"], ["わ行","を","wo"], ["ん","ん","n"],
+  ["あ行","あ","a"],  ["あ行","い","i"],  ["あ行","う","u"],  ["あ行","え","e"],  ["あ行","お","o"],
+  ["か行","か","ka"], ["か行","き","ki"], ["か行","く","ku"], ["か行","け","ke"], ["か行","こ","ko"],
+  ["さ行","さ","sa"], ["さ行","し","shi"],["さ行","す","su"], ["さ行","せ","se"], ["さ行","そ","so"],
+  ["た行","た","ta"], ["た行","ち","chi"],["た行","つ","tsu"],["た行","て","te"], ["た行","と","to"],
+  ["な行","な","na"], ["な行","に","ni"], ["な行","ぬ","nu"], ["な行","ね","ne"], ["な行","の","no"],
+  ["は行","は","ha"], ["は行","ひ","hi"], ["は行","ふ","fu"], ["は行","へ","he"], ["は行","ほ","ho"],
+  ["ま行","ま","ma"], ["ま行","み","mi"], ["ま行","む","mu"], ["ま行","め","me"], ["ま行","も","mo"],
+  ["や行","や","ya"], ["や行","ゆ","yu"], ["や行","よ","yo"],
+  ["ら行","ら","ra"], ["ら行","り","ri"], ["ら行","る","ru"], ["ら行","れ","re"], ["ら行","ろ","ro"],
+  ["わ行","わ","wa"], ["わ行","を","wo"], ["ん","ん","n"],
 ];
+
+const KATAKANA = [
+  ["ア行","ア","a"],  ["ア行","イ","i"],  ["ア行","ウ","u"],  ["ア行","エ","e"],  ["ア行","オ","o"],
+  ["カ行","カ","ka"], ["カ行","キ","ki"], ["カ行","ク","ku"], ["カ行","ケ","ke"], ["カ行","コ","ko"],
+  ["サ行","サ","sa"], ["サ行","シ","shi"],["サ行","ス","su"], ["サ行","セ","se"], ["サ行","ソ","so"],
+  ["タ行","タ","ta"], ["タ行","チ","chi"],["タ行","ツ","tsu"],["タ行","テ","te"], ["タ行","ト","to"],
+  ["ナ行","ナ","na"], ["ナ行","ニ","ni"], ["ナ行","ヌ","nu"], ["ナ行","ネ","ne"], ["ナ行","ノ","no"],
+  ["ハ行","ハ","ha"], ["ハ行","ヒ","hi"], ["ハ行","フ","fu"], ["ハ行","ヘ","he"], ["ハ行","ホ","ho"],
+  ["マ行","マ","ma"], ["マ行","ミ","mi"], ["マ行","ム","mu"], ["マ行","メ","me"], ["マ行","モ","mo"],
+  ["ヤ行","ヤ","ya"], ["ヤ行","ユ","yu"], ["ヤ行","ヨ","yo"],
+  ["ラ行","ラ","ra"], ["ラ行","リ","ri"], ["ラ行","ル","ru"], ["ラ行","レ","re"], ["ラ行","ロ","ro"],
+  ["ワ行","ワ","wa"], ["ワ行","ヲ","wo"], ["ン","ン","n"],
+];
+
+// Combined: hiragana indices 0..N-1, katakana indices N..
+const ALL_KANA = [...HIRAGANA, ...KATAKANA];
+const HIRA_END = HIRAGANA.length; // first katakana index
 
 // ── TRANSLATIONS ──────────────────────────────────────────
 const T = {
@@ -655,6 +750,8 @@ const T = {
     result_label:'РЕЗУЛЬТАТ',
     lang_title:  'Язык интерфейса',
     opts_title:  'Вариантов ответа',
+    q_count_title:'Кол-во вопросов',
+    font_title:  'Шрифт',
     kana_title:  'Активные иероглифы',
     kana_hint:   'Нажми чтобы включить / выключить',
     select_all:  'Выбрать все',
@@ -677,6 +774,8 @@ const T = {
     result_label:'RESULT',
     lang_title:  'Interface language',
     opts_title:  'Answer options',
+    q_count_title:'Question count',
+    font_title:  'Font',
     kana_title:  'Active characters',
     kana_hint:   'Tap to enable / disable',
     select_all:  'Select all',
@@ -707,6 +806,9 @@ function setLang(l) {
     const key = el.dataset.tTip;
     if (T[l][key]) el.dataset.tip = T[l][key];
   });
+  // rebuild font picker labels
+  const fp = document.getElementById('font-options');
+  if (fp && fp.children.length > 0) buildFontPicker();
 }
 
 function t(key, ...args) {
@@ -715,34 +817,84 @@ function t(key, ...args) {
 }
 
 
-let active = new Set(HIRAGANA.map((_,i)=>i));
+let active = new Set(ALL_KANA.map((_,i)=>i).filter(i => i < HIRA_END)); // hiragana on by default
 let quizList = [], qIdx = 0, score = 0, totalQ = 10, optCount = 4;
+let currentSection = 'hiragana'; // 'hiragana' | 'katakana'
+
+// ── FONTS ──────────────────────────────────────────────────
+const FONTS = [
+  { id: 'noto-serif',   family: "'Noto Serif JP', serif",       labelRu: 'Печатный',      labelEn: 'Serif',       preview: 'あアかカ' },
+  { id: 'noto-sans',    family: "'Noto Sans JP', sans-serif",    labelRu: 'Без засечек',   labelEn: 'Sans-serif',  preview: 'あアかカ' },
+  { id: 'rounded',      family: "'M PLUS Rounded 1c', sans-serif",labelRu: 'Округлый',     labelEn: 'Rounded',     preview: 'あアかカ' },
+  { id: 'handwritten',  family: "'Zen Kurenaido', sans-serif",   labelRu: 'Рукописный',    labelEn: 'Handwritten', preview: 'あアかカ' },
+  { id: 'calligraphy',  family: "'Kaisei Decol', serif",         labelRu: 'Каллиграфия',   labelEn: 'Calligraphy', preview: 'あアかカ' },
+];
+let currentFont = 'noto-serif';
+
+function buildFontPicker() {
+  const container = document.getElementById('font-options');
+  container.innerHTML = '';
+  FONTS.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'font-opt' + (f.id === currentFont ? ' active' : '');
+    el.onclick = () => setFont(f.id);
+    el.innerHTML = `
+      <span class="font-opt-preview" style="font-family:${f.family}">${f.preview}</span>
+      <span class="font-opt-label">${lang === 'ru' ? f.labelRu : f.labelEn}</span>
+    `;
+    container.appendChild(el);
+  });
+}
+
+function setFont(id) {
+  currentFont = id;
+  const f = FONTS.find(f => f.id === id);
+  document.documentElement.style.setProperty('--jp-font', f.family);
+  localStorage.setItem('hq_font', id);
+  buildFontPicker();
+}
 
 function save() {
   localStorage.setItem('hq_active', JSON.stringify([...active]));
   localStorage.setItem('hq_opts', document.getElementById('opt-count').value);
+  localStorage.setItem('hq_qcount', document.getElementById('q-count').value);
   localStorage.setItem('hq_lang', lang);
+  localStorage.setItem('hq_font', currentFont);
 }
+
 function load() {
   const a = localStorage.getItem('hq_active');
   if (a) active = new Set(JSON.parse(a));
   const o = localStorage.getItem('hq_opts');
   if (o) { document.getElementById('opt-count').value = o; document.getElementById('opt-val').textContent = o; }
+  const qc = localStorage.getItem('hq_qcount');
+  if (qc) { document.getElementById('q-count').value = qc; document.getElementById('q-count-val').textContent = qc; }
   const v = localStorage.getItem('hq_view');
   if (v) setView(v);
   const l = localStorage.getItem('hq_lang');
   if (l) setLang(l);
+  const fnt = localStorage.getItem('hq_font');
+  if (fnt) setFont(fnt);
 }
 
 // ── GRID ──────────────────────────────────────────────────
-// Short row labels for compact mode
-const ROW_SHORT = {
-  "あ行":"あ", "か行":"か", "さ行":"さ", "た行":"た", "な行":"な",
-  "は行":"は", "ま行":"ま", "や行":"や", "ら行":"ら", "わ行":"わ", "ん":"ん"
-};
+const ROW_SHORT_H = {"あ行":"あ","か行":"か","さ行":"さ","た行":"た","な行":"な","は行":"は","ま行":"ま","や行":"や","ら行":"ら","わ行":"わ","ん":"ん"};
+const ROW_SHORT_K = {"ア行":"ア","カ行":"カ","サ行":"サ","タ行":"タ","ナ行":"ナ","ハ行":"ハ","マ行":"マ","ヤ行":"ヤ","ラ行":"ラ","ワ行":"ワ","ン":"ン"};
+
+function setSection(sec) {
+  currentSection = sec;
+  document.getElementById('sec-hiragana').classList.toggle('active', sec === 'hiragana');
+  document.getElementById('sec-katakana').classList.toggle('active', sec === 'katakana');
+  buildGrid();
+}
+
+function getSectionData() {
+  if (currentSection === 'hiragana') return { data: HIRAGANA, offset: 0, rowShort: ROW_SHORT_H };
+  return { data: KATAKANA, offset: HIRA_END, rowShort: ROW_SHORT_K };
+}
 
 function makeKanaBtn(i) {
-  const [, k, r] = HIRAGANA[i];
+  const [, k, r] = ALL_KANA[i];
   const btn = document.createElement('div');
   btn.className = 'kana-btn ' + (active.has(i) ? 'on' : 'off');
   btn.innerHTML = `<span class="k">${k}</span><span class="r">${r}</span>`;
@@ -752,32 +904,32 @@ function makeKanaBtn(i) {
 }
 
 function buildGrid() {
+  const { data, offset, rowShort } = getSectionData();
   const grid = document.getElementById('kana-grid');
   grid.innerHTML = '';
   grid.classList.toggle('compact', viewMode === 'compact');
 
   if (viewMode === 'compact') {
-    // Group by row, render as horizontal rows with label
     const groups = [];
     let cur = null;
-    HIRAGANA.forEach(([grp, k, r], i) => {
+    data.forEach(([grp], di) => {
       if (!cur || cur.grp !== grp) { cur = { grp, items: [] }; groups.push(cur); }
-      cur.items.push(i);
+      cur.items.push(offset + di);
     });
     groups.forEach(({ grp, items }) => {
       const row = document.createElement('div');
       row.className = 'kana-row';
       const lbl = document.createElement('div');
       lbl.className = 'kana-row-label';
-      lbl.textContent = ROW_SHORT[grp] || grp;
+      lbl.textContent = rowShort[grp] || grp;
       row.appendChild(lbl);
       items.forEach(i => row.appendChild(makeKanaBtn(i)));
       grid.appendChild(row);
     });
   } else {
-    // Normal: group labels + flat buttons
     let lastGroup = null;
-    HIRAGANA.forEach(([grp, k, r], i) => {
+    data.forEach(([grp], di) => {
+      const i = offset + di;
       if (grp !== lastGroup) {
         const lbl = document.createElement('div');
         lbl.className = 'kana-group-label';
@@ -797,8 +949,11 @@ function toggleKana(i, btn) {
 }
 
 function toggleAll(on) {
-  if (on) HIRAGANA.forEach((_,i)=>active.add(i));
-  else active.clear();
+  const { data, offset } = getSectionData();
+  data.forEach((_, di) => {
+    const i = offset + di;
+    if (on) active.add(i); else active.delete(i);
+  });
   buildGrid(); save();
 }
 
@@ -821,19 +976,20 @@ function show(id) {
   document.getElementById(id).classList.add('active');
 }
 function showHome() { show('screen-home'); }
-function showSettings() { buildGrid(); show('screen-settings'); }
+function showSettings() { buildGrid(); buildFontPicker(); show('screen-settings'); }
 
 // ── QUIZ ──────────────────────────────────────────────────
 function startQuiz() {
   const warn = document.getElementById('warn-min');
   optCount = parseInt(document.getElementById('opt-count').value);
+  const qMax = parseInt(document.getElementById('q-count').value);
 
   if (active.size < 3) { warn.classList.add('show'); return; }
   warn.classList.remove('show');
-  if (active.size < optCount) { optCount = active.size; }
+  if (active.size < optCount) optCount = active.size;
 
   const pool = [...active];
-  quizList = shuffle(pool).slice(0, Math.min(10, pool.length));
+  quizList = shuffle(pool).slice(0, Math.min(qMax, pool.length));
   qIdx = 0; score = 0;
   totalQ = quizList.length;
   show('screen-quiz');
@@ -847,7 +1003,7 @@ function renderQ() {
   document.getElementById('q-score').textContent = `✓ ${score}`;
 
   const idx = quizList[qIdx];
-  const [, kana, romaji] = HIRAGANA[idx];
+  const [, kana, romaji] = ALL_KANA[idx];
 
   // randomly show kana or romaji as prompt
   const showKana = Math.random() < 0.5;
@@ -873,7 +1029,7 @@ function renderQ() {
   grid.innerHTML = '';
 
   opts.forEach(oi => {
-    const [, ok, or] = HIRAGANA[oi];
+    const [, ok, or] = ALL_KANA[oi];
     const btn = document.createElement('button');
     btn.className = 'opt-btn';
     btn.dataset.idx = oi;
