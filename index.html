@@ -584,6 +584,58 @@
     letter-spacing: 0.02em;
   }
 
+  /* ── PRESETS ── */
+  .preset-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .preset-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .preset-label {
+    font-size: 0.65rem;
+    font-family: var(--ui-font);
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .preset-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2px 0 14px;
+    opacity: 0.5;
+  }
+  .preset-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preset-btn:hover:not(.active) {
+    border-color: var(--accent2);
+    color: var(--text);
+  }
+  .preset-btn.active {
+    border-color: var(--accent2);
+    background: rgba(124,106,247,0.18);
+    color: var(--text);
+  }
+
   /* ── KEYBOARD MODE TOGGLE ── */
   .kbd-toggle-row {
     display: flex;
@@ -873,6 +925,15 @@
           </div>
         </div>
         <p class="grid-label" data-t="kana_hint" style="margin-top:12px">Нажми чтобы включить / выключить</p>
+        <div class="preset-section">
+          <span class="preset-label" data-t="presets_title">ПРЕСЕТЫ</span>
+          <div class="preset-row">
+            <button class="preset-btn active" id="preset-0" onclick="loadPreset(0)">1</button>
+            <button class="preset-btn" id="preset-1" onclick="loadPreset(1)">2</button>
+            <button class="preset-btn" id="preset-2" onclick="loadPreset(2)">3</button>
+          </div>
+        </div>
+        <div class="preset-divider"></div>
         <div class="section-toggle">
           <button class="section-btn active has-tooltip" id="sec-hiragana" onclick="setSection('hiragana')" data-tip="Хирагана" data-t-tip="sec_hiragana">ひらがな</button>
           <button class="section-btn has-tooltip" id="sec-katakana" onclick="setSection('katakana')" data-tip="Катакана" data-t-tip="sec_katakana">カタカナ</button>
@@ -1014,6 +1075,7 @@ const T = {
     view_compact:  'Компактно',
     sec_hiragana:  'Хирагана',
     sec_katakana:  'Катакана',
+    presets_title: 'ПРЕСЕТЫ',
   },
   en: {
     home_sub:    'Train the Japanese alphabet — one character at a time',
@@ -1050,6 +1112,7 @@ const T = {
     view_compact:  'Compact',
     sec_hiragana:  'Hiragana',
     sec_katakana:  'Katakana',
+    presets_title: 'PRESETS',
   }
 };
 
@@ -1132,8 +1195,7 @@ function save() {
 }
 
 function load() {
-  const a = localStorage.getItem('hq_active');
-  if (a) active = new Set(JSON.parse(a));
+  loadPresets();
   const o = localStorage.getItem('hq_opts');
   if (o) { document.getElementById('opt-count').value = o; document.getElementById('opt-val').textContent = o; }
   const qc = localStorage.getItem('hq_qcount');
@@ -1221,7 +1283,8 @@ function buildGrid() {
 function toggleKana(i, btn) {
   if (active.has(i)) { active.delete(i); btn.className = 'kana-btn off'; }
   else { active.add(i); btn.className = 'kana-btn on'; }
-  save();
+  presets[activePreset] = new Set(active);
+  savePresets();
 }
 
 function toggleAll(on) {
@@ -1230,10 +1293,48 @@ function toggleAll(on) {
     const i = offset + di;
     if (on) active.add(i); else active.delete(i);
   });
-  buildGrid(); save();
+  presets[activePreset] = new Set(active);
+  buildGrid(); savePresets();
 }
 
-// ── VIEW MODE ──────────────────────────────────────────────
+// ── PRESETS ──────────────────────────────────────────────
+const DEFAULT_PRESET = [...Array(HIRA_END).keys()]; // hiragana by default
+let presets = [
+  new Set(DEFAULT_PRESET),
+  new Set(DEFAULT_PRESET),
+  new Set(DEFAULT_PRESET),
+];
+let activePreset = 0;
+
+function loadPreset(n) {
+  activePreset = n;
+  active = new Set(presets[n]);
+  document.querySelectorAll('.preset-btn').forEach((b, i) =>
+    b.classList.toggle('active', i === n));
+  buildGrid();
+  savePresets();
+}
+
+function savePresets() {
+  // save all 3 preset sets
+  presets.forEach((p, i) =>
+    localStorage.setItem(`hq_preset_${i}`, JSON.stringify([...p])));
+  localStorage.setItem('hq_preset_active', activePreset);
+  // also keep hq_active in sync for quiz
+  localStorage.setItem('hq_active', JSON.stringify([...active]));
+}
+
+function loadPresets() {
+  for (let i = 0; i < 3; i++) {
+    const stored = localStorage.getItem(`hq_preset_${i}`);
+    if (stored) presets[i] = new Set(JSON.parse(stored));
+  }
+  const ap = localStorage.getItem('hq_preset_active');
+  if (ap !== null) activePreset = parseInt(ap);
+  active = new Set(presets[activePreset]);
+  document.querySelectorAll('.preset-btn').forEach((b, i) =>
+    b.classList.toggle('active', i === activePreset));
+}
 let viewMode = 'normal';
 
 function setView(mode) {
