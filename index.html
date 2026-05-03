@@ -58,6 +58,7 @@
   /* ── SCREENS ── */
   .screen { width: 100%; max-width: 640px; display: none; flex-direction: column; align-items: center; gap: 24px; }
   .screen.active { display: flex; }
+  #screen-settings { max-width: 960px; }
 
   /* ── HOME ── */
   .home-title {
@@ -111,7 +112,101 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 24px;
+    padding: 20px;
+  }
+
+  /* ── SIDE BY SIDE CARDS ── */
+  .settings-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+  .settings-row .settings-card {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── DESKTOP 3-COLUMN SETTINGS LAYOUT ── */
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    grid-template-areas: "left center right";
+    gap: 16px;
+    width: 100%;
+    max-width: 960px;
+    align-items: start;
+  }
+  .settings-side { display: flex; flex-direction: column; gap: 16px; }
+  .settings-side-left  { grid-area: left; }
+  .settings-center     { grid-area: center; }
+  .settings-side-right { grid-area: right; }
+
+  /* ── TABLET / NARROW DESKTOP ── */
+  @media (max-width: 780px) {
+    .settings-layout {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "left"
+        "center"
+        "right";
+    }
+    #screen-settings { max-width: 640px; }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 480px) {
+    body { padding: 16px 12px; }
+
+    /* collapse 3-column layout to single column */
+    .settings-layout {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "left"
+        "center"
+        "right";
+    }
+    #screen-settings { max-width: 640px; }
+
+    /* stack side-by-side rows vertically on small screens */
+    .settings-row { flex-direction: column; gap: 10px; }
+    .settings-row .settings-card { flex: none; width: 100%; }
+
+    /* lang toggle — stretch full width */
+    .lang-toggle { width: 100%; }
+    .lang-btn { flex: 1; padding: 8px 10px; font-size: 0.82rem; }
+
+    /* font picker — horizontal scroll grid instead of tall column */
+    .font-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .font-opt {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 10px 10px;
+    }
+    .font-opt-preview { font-size: 1.2rem; }
+    .font-opt-label { font-size: 0.75rem; }
+
+    /* sliders */
+    .range-val { font-size: 1.1rem; min-width: 24px; }
+
+    /* settings card padding tighter */
+    .settings-card { padding: 14px; }
+    .settings-title { font-size: 0.78rem; margin-bottom: 12px; }
+
+    /* kana grid compact fits better */
+    .kana-grid.compact .kana-btn { width: 40px; height: 40px; }
+    .kana-row-label { width: 24px; font-size: 0.9rem; }
+
+    /* home buttons stack */
+    .btn-group { flex-direction: column; width: 100%; }
+    .btn { width: 100%; text-align: center; }
+
+    /* quiz options */
+    .opt-btn { padding: 14px 8px; font-size: 1.3rem; }
   }
 
   .settings-title {
@@ -278,17 +373,6 @@
   .kana-grid.compact .kana-btn .k { font-size: 1.15rem; }
   .kana-grid.compact .kana-btn .r { display: none; }
 
-  /* ── SIDE BY SIDE CARDS ── */
-  .settings-row {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-  }
-  .settings-row .settings-card {
-    flex: 1;
-    min-width: 0;
-  }
-
   /* ── TOOLTIP ── */
   .has-tooltip { position: relative; }
   .has-tooltip::after {
@@ -448,6 +532,113 @@
   }
   .opt-btn:disabled { cursor: default; transform: none !important; }
 
+  /* ── KEYBOARD INPUT ── */
+  .kbd-input-wrap {
+    width: 100%;
+    position: relative;
+  }
+  .kbd-input {
+    width: 100%;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    caret-color: var(--accent);
+  }
+  .kbd-input:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(124,106,247,0.15);
+  }
+  .kbd-input.correct {
+    border-color: var(--correct);
+    background: rgba(76,175,130,0.12);
+    color: var(--correct);
+    box-shadow: 0 0 0 3px rgba(76,175,130,0.15);
+  }
+  .kbd-input.wrong {
+    border-color: var(--wrong);
+    background: rgba(224,92,106,0.12);
+    color: var(--wrong);
+    box-shadow: 0 0 0 3px rgba(224,92,106,0.15);
+  }
+  .kbd-hint {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-top: -8px;
+    opacity: 0.7;
+  }
+  .ratio-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── KEYBOARD MODE TOGGLE ── */
+  .kbd-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .kbd-toggle-label {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .kbd-toggle-btn {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    border: none;
+    background: var(--border);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .kbd-toggle-btn.on { background: var(--accent2); }
+  .kbd-toggle-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    pointer-events: none;
+  }
+  .kbd-toggle-btn.on .kbd-toggle-knob { transform: translateX(20px); }
+
+  /* ── IN-QUIZ ONE-TIME DISABLE BUTTON ── */
+  .kbd-disable-quiz-btn {
+    font-family: var(--ui-font);
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: color 0.15s, border-color 0.15s;
+    margin-top: -8px;
+  }
+  .kbd-disable-quiz-btn:hover {
+    color: var(--text);
+    border-color: var(--muted);
+  }
+
   /* results */
   .result-big {
     font-family: var(--jp-font);
@@ -456,6 +647,12 @@
     color: var(--accent);
   }
   .result-label { color: var(--muted); font-size: 0.9rem; letter-spacing: 0.1em; }
+  .result-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
   .result-score {
     font-size: 1.1rem;
     text-align: center;
@@ -559,6 +756,7 @@
     display: flex;
     gap: 6px;
     margin-bottom: 8px;
+    overflow: visible;
   }
   .section-btn {
     padding: 5px 14px;
@@ -599,81 +797,121 @@
 <div class="screen" id="screen-settings">
   <button class="back-btn" onclick="showHome()">← <span data-t="back">назад</span></button>
 
-  <div class="settings-row">
-    <div class="settings-card">
-      <div class="settings-title" data-t="lang_title">Язык интерфейса</div>
-      <div class="lang-toggle">
-        <button class="lang-btn active" id="lang-ru" onclick="setLang('ru')">Русский</button>
-        <button class="lang-btn" id="lang-en" onclick="setLang('en')">English</button>
+  <!-- Desktop 3-column layout wrapper -->
+  <div class="settings-layout">
+
+    <!-- LEFT COLUMN -->
+    <div class="settings-side settings-side-left">
+      <div class="settings-card">
+        <div class="settings-title" data-t="q_count_title">Кол-во вопросов</div>
+        <div class="range-row">
+          <input type="range" id="q-count" min="10" max="30" value="10" step="5"
+                 oninput="document.getElementById('q-count-val').textContent=this.value">
+          <div class="range-val" id="q-count-val">10</div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-title" data-t="opts_title">Вариантов ответа</div>
+        <div class="range-row">
+          <input type="range" id="opt-count" min="4" max="10" value="4"
+                 oninput="document.getElementById('opt-val').textContent=this.value">
+          <div class="range-val" id="opt-val">4</div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-title" data-t="ratio_title">Иероглифов сверху</div>
+        <div class="range-row">
+          <input type="range" id="kana-ratio" min="0" max="100" value="50" step="10"
+                 oninput="document.getElementById('kana-ratio-val').textContent=this.value+'%'; save()">
+          <div class="range-val" id="kana-ratio-val">50%</div>
+        </div>
+        <p class="ratio-hint" data-t="ratio_hint">100% = всегда печатать ромадзи</p>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-title" data-t="delay_title">Задержка</div>
+        <div class="range-row">
+          <input type="range" id="answer-delay" min="0" max="900" value="700" step="50"
+                 oninput="document.getElementById('answer-delay-val').textContent=this.value+'мс'; save()">
+          <div class="range-val" id="answer-delay-val">700мс</div>
+        </div>
+        <p class="ratio-hint" data-t="delay_hint">после правильного ответа</p>
       </div>
     </div>
 
-    <div class="settings-card">
-      <div class="settings-title" data-t="opts_title">Вариантов ответа</div>
-      <div class="range-row">
-        <input type="range" id="opt-count" min="2" max="10" value="4"
-               oninput="document.getElementById('opt-val').textContent=this.value">
-        <div class="range-val" id="opt-val">4</div>
+    <!-- CENTER COLUMN — Active characters -->
+    <div class="settings-center">
+      <div class="settings-card">
+        <div class="kana-card-header">
+          <div class="settings-title" data-t="kana_title" style="margin-bottom:0">Активные иероглифы</div>
+          <div class="view-toggle">
+            <!-- Normal/expanded: 4 large squares — DEFAULT -->
+            <button class="view-btn active has-tooltip" id="view-normal" onclick="setView('normal')" data-tip="Подробно" data-t-tip="view_expanded">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1"  y="1"  width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+                <rect x="11" y="1"  width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+                <rect x="1"  y="11" width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+                <rect x="11" y="11" width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
+              </svg>
+            </button>
+            <!-- Compact: 9 small squares (rows layout) -->
+            <button class="view-btn has-tooltip" id="view-compact" onclick="setView('compact')" data-tip="Компактно" data-t-tip="view_compact">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1"   y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="7.5" y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="14"  y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="1"   y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="7.5" y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="14"  y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="1"   y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="7.5" y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+                <rect x="14"  y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="grid-label" data-t="kana_hint" style="margin-top:12px">Нажми чтобы включить / выключить</p>
+        <div class="section-toggle">
+          <button class="section-btn active has-tooltip" id="sec-hiragana" onclick="setSection('hiragana')" data-tip="Хирагана" data-t-tip="sec_hiragana">ひらがな</button>
+          <button class="section-btn has-tooltip" id="sec-katakana" onclick="setSection('katakana')" data-tip="Катакана" data-t-tip="sec_katakana">カタカナ</button>
+        </div>
+        <div class="kana-grid" id="kana-grid"></div>
+        <div class="grid-actions">
+          <button class="btn-tiny" data-t="select_all" onclick="toggleAll(true)">Выбрать все</button>
+          <button class="btn-tiny" data-t="deselect_all" onclick="toggleAll(false)">Снять все</button>
+        </div>
+      </div><!-- /settings-card -->
+    </div><!-- /settings-center -->
+
+    <!-- RIGHT COLUMN -->
+    <div class="settings-side settings-side-right">
+      <div class="settings-card">
+        <div class="settings-title" data-t="lang_title">Язык интерфейса</div>
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="lang-ru" onclick="setLang('ru')">Русский</button>
+          <button class="lang-btn" id="lang-en" onclick="setLang('en')">English</button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-title" data-t="kbd_mode_title">Ввод с клавиатуры</div>
+        <div class="kbd-toggle-row">
+          <span class="kbd-toggle-label" id="kbd-mode-label">Включён</span>
+          <button class="kbd-toggle-btn on" id="kbd-mode-btn" onclick="toggleKbdMode()">
+            <span class="kbd-toggle-knob"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-title" data-t="font_title">Шрифт</div>
+        <div class="font-options" id="font-options"></div>
       </div>
     </div>
-  </div>
 
-  <div class="settings-row">
-    <div class="settings-card">
-      <div class="settings-title" data-t="q_count_title">Кол-во вопросов</div>
-      <div class="range-row">
-        <input type="range" id="q-count" min="10" max="30" value="10" step="5"
-               oninput="document.getElementById('q-count-val').textContent=this.value">
-        <div class="range-val" id="q-count-val">10</div>
-      </div>
-    </div>
-
-    <div class="settings-card">
-      <div class="settings-title" data-t="font_title">Шрифт</div>
-      <div class="font-options" id="font-options"></div>
-    </div>
-  </div>
-
-  <div class="settings-card">
-    <div class="kana-card-header">
-      <div class="settings-title" data-t="kana_title" style="margin-bottom:0">Активные иероглифы</div>
-      <div class="view-toggle">
-        <!-- Normal/expanded: 4 large squares — DEFAULT -->
-        <button class="view-btn active has-tooltip" id="view-normal" onclick="setView('normal')" data-tip="Подробно" data-t-tip="view_expanded">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1"  y="1"  width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
-            <rect x="11" y="1"  width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
-            <rect x="1"  y="11" width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
-            <rect x="11" y="11" width="8" height="8" rx="2" fill="currentColor" opacity="0.9"/>
-          </svg>
-        </button>
-        <!-- Compact: 9 small squares (rows layout) -->
-        <button class="view-btn has-tooltip" id="view-compact" onclick="setView('compact')" data-tip="Компактно" data-t-tip="view_compact">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="1"   y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="7.5" y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="14"  y="1"   width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="1"   y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="7.5" y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="14"  y="7.5" width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="1"   y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="7.5" y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-            <rect x="14"  y="14"  width="5" height="5" rx="1.5" fill="currentColor" opacity="0.9"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <p class="grid-label" data-t="kana_hint" style="margin-top:12px">Нажми чтобы включить / выключить</p>
-    <div class="section-toggle">
-      <button class="section-btn active" id="sec-hiragana" onclick="setSection('hiragana')">ひらがな</button>
-      <button class="section-btn" id="sec-katakana" onclick="setSection('katakana')">カタカナ</button>
-    </div>
-    <div class="kana-grid" id="kana-grid"></div>
-    <div class="grid-actions">
-      <button class="btn-tiny" data-t="select_all" onclick="toggleAll(true)">Выбрать все</button>
-      <button class="btn-tiny" data-t="deselect_all" onclick="toggleAll(false)">Снять все</button>
-    </div>
-  </div>
+  </div><!-- /settings-layout -->
 
   <div class="warn" id="warn-min" data-t="warn_min">Нужно минимум 3 активных иероглифа</div>
   <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="start">Начать тест</span></button>
@@ -691,6 +929,7 @@
     <div id="q-display"></div>
   </div>
   <p class="quiz-hint" id="q-hint"></p>
+  <button class="kbd-disable-quiz-btn" id="kbd-disable-quiz" onclick="disableKbdForSession()" data-t="kbd_disable_btn" style="display:none">Переключить на варианты</button>
   <div class="options-grid" id="options-grid"></div>
 </div>
 
@@ -699,6 +938,7 @@
   <div class="result-big" id="res-emoji">🎉</div>
   <div class="result-label" data-t="result_label">РЕЗУЛЬТАТ</div>
   <div class="result-score" id="res-score"></div>
+  <div class="result-time" id="res-time"></div>
   <div class="btn-group">
     <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="again">Ещё раз</span></button>
     <button class="btn btn-secondary" onclick="showHome()"><span data-t="menu">Меню</span></button>
@@ -759,9 +999,21 @@ const T = {
     warn_min:    'Нужно минимум 3 активных иероглифа',
     hint_pick_romaji: 'выбери транскрипцию',
     hint_pick_kana:   'выбери иероглиф',
+    hint_type_romaji: 'введи транскрипцию с клавиатуры',
+    ratio_title:     'Иероглифов сверху',
+    ratio_hint:      '100% = всегда вводить ромадзи',
+    kbd_mode_title:  'Ввод с клавиатуры',
+    kbd_mode_on:     'Включён',
+    kbd_mode_off:    'Выключен',
+    kbd_disable_btn: 'Переключить на варианты',
+    delay_title:     'Задержка',
+    delay_hint:      'после правильного ответа',
+    result_time:     (s) => `⏱ ${s}`,
     score_of:    (s,t) => `<strong>${s}</strong> из <strong>${t}</strong> верно`,
     view_expanded: 'Подробно',
     view_compact:  'Компактно',
+    sec_hiragana:  'Хирагана',
+    sec_katakana:  'Катакана',
   },
   en: {
     home_sub:    'Train the Japanese alphabet — one character at a time',
@@ -783,9 +1035,21 @@ const T = {
     warn_min:    'Need at least 3 active characters',
     hint_pick_romaji: 'choose the transcription',
     hint_pick_kana:   'choose the character',
+    hint_type_romaji: 'type the romaji on your keyboard',
+    ratio_title:     'Kana frequency (%)',
+    ratio_hint:      '100% = always type romaji',
+    kbd_mode_title:  'Keyboard input',
+    kbd_mode_on:     'Enabled',
+    kbd_mode_off:    'Disabled',
+    kbd_disable_btn: 'Switch to options',
+    delay_title:     'Delay',
+    delay_hint:      'after a correct answer',
+    result_time:     (s) => `⏱ ${s}`,
     score_of:    (s,t) => `<strong>${s}</strong> out of <strong>${t}</strong> correct`,
     view_expanded: 'Expanded',
     view_compact:  'Compact',
+    sec_hiragana:  'Hiragana',
+    sec_katakana:  'Katakana',
   }
 };
 
@@ -809,6 +1073,8 @@ function setLang(l) {
   // rebuild font picker labels
   const fp = document.getElementById('font-options');
   if (fp && fp.children.length > 0) buildFontPicker();
+  // update kbd mode label
+  updateKbdModeUI();
 }
 
 function t(key, ...args) {
@@ -858,6 +1124,9 @@ function save() {
   localStorage.setItem('hq_active', JSON.stringify([...active]));
   localStorage.setItem('hq_opts', document.getElementById('opt-count').value);
   localStorage.setItem('hq_qcount', document.getElementById('q-count').value);
+  localStorage.setItem('hq_ratio', document.getElementById('kana-ratio').value);
+  localStorage.setItem('hq_delay', document.getElementById('answer-delay').value);
+  localStorage.setItem('hq_kbd', kbdMode ? '1' : '0');
   localStorage.setItem('hq_lang', lang);
   localStorage.setItem('hq_font', currentFont);
 }
@@ -869,6 +1138,13 @@ function load() {
   if (o) { document.getElementById('opt-count').value = o; document.getElementById('opt-val').textContent = o; }
   const qc = localStorage.getItem('hq_qcount');
   if (qc) { document.getElementById('q-count').value = qc; document.getElementById('q-count-val').textContent = qc; }
+  const dl = localStorage.getItem('hq_delay');
+  if (dl) { document.getElementById('answer-delay').value = dl; document.getElementById('answer-delay-val').textContent = dl + 'мс'; }
+  const rt = localStorage.getItem('hq_ratio');
+  if (rt) { document.getElementById('kana-ratio').value = rt; document.getElementById('kana-ratio-val').textContent = rt + '%'; }
+  const kb = localStorage.getItem('hq_kbd');
+  if (kb !== null) kbdMode = kb === '1';
+  updateKbdModeUI();
   const v = localStorage.getItem('hq_view');
   if (v) setView(v);
   const l = localStorage.getItem('hq_lang');
@@ -970,6 +1246,52 @@ function setView(mode) {
   if (grid.children.length > 0) buildGrid();
 }
 
+// ── ROMAJI ALIASES (IME-compatible alternatives) ──────────
+const ROMAJI_ALIASES = { 'shi':'si', 'chi':'ti', 'tsu':'tu', 'fu':'hu' };
+// build reverse map too: si→shi etc
+const ROMAJI_REVERSE = {};
+Object.entries(ROMAJI_ALIASES).forEach(([std, alt]) => { ROMAJI_REVERSE[alt] = std; });
+
+function romajiMatch(input, correct) {
+  const a = input.trim().toLowerCase();
+  const c = correct.toLowerCase();
+  if (a === c) return true;
+  // check if input is alias of correct
+  if (ROMAJI_ALIASES[c] === a) return true;
+  if (ROMAJI_REVERSE[c] === a) return true;
+  return false;
+}
+
+let kanaRatio = 50;
+let currentShowKana = false;
+let kbdMode = true;
+let kbdDisabledForSession = false;
+let quizStartTime = 0;
+let answerDelay = 700;
+
+function toggleKbdMode() {
+  kbdMode = !kbdMode;
+  kbdDisabledForSession = false; // reset session flag when user changes setting
+  updateKbdModeUI();
+  localStorage.setItem('hq_kbd', kbdMode ? '1' : '0');
+}
+
+function updateKbdModeUI() {
+  const btn = document.getElementById('kbd-mode-btn');
+  const lbl = document.getElementById('kbd-mode-label');
+  btn.classList.toggle('on', kbdMode);
+  lbl.textContent = t(kbdMode ? 'kbd_mode_on' : 'kbd_mode_off');
+}
+
+function disableKbdForSession() {
+  kbdMode = false;
+  kbdDisabledForSession = false;
+  localStorage.setItem('hq_kbd', '0');
+  updateKbdModeUI();
+  document.getElementById('kbd-disable-quiz').style.display = 'none';
+  renderQ();
+}
+
 // ── SCREENS ──────────────────────────────────────────────
 function show(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -983,6 +1305,7 @@ function startQuiz() {
   const warn = document.getElementById('warn-min');
   optCount = parseInt(document.getElementById('opt-count').value);
   const qMax = parseInt(document.getElementById('q-count').value);
+  kanaRatio = parseInt(document.getElementById('kana-ratio').value);
 
   if (active.size < 3) { warn.classList.add('show'); return; }
   warn.classList.remove('show');
@@ -992,6 +1315,9 @@ function startQuiz() {
   quizList = shuffle(pool).slice(0, Math.min(qMax, pool.length));
   qIdx = 0; score = 0;
   totalQ = quizList.length;
+  kbdDisabledForSession = false;
+  answerDelay = parseInt(document.getElementById('answer-delay').value);
+  quizStartTime = Date.now();
   show('screen-quiz');
   renderQ();
 }
@@ -1005,65 +1331,119 @@ function renderQ() {
   const idx = quizList[qIdx];
   const [, kana, romaji] = ALL_KANA[idx];
 
-  // randomly show kana or romaji as prompt
-  const showKana = Math.random() < 0.5;
+  currentShowKana = Math.random() * 100 < kanaRatio;
   const display = document.getElementById('q-display');
   const hint = document.getElementById('q-hint');
+  const grid = document.getElementById('options-grid');
+  const disableBtn = document.getElementById('kbd-disable-quiz');
 
-  if (showKana) {
+  // Decide if we use keyboard input for this question:
+  // only when kana is on top AND kbdMode is on AND user hasn't one-time disabled it
+  const useKbd = currentShowKana && kbdMode && !kbdDisabledForSession;
+
+  // Show the one-time disable button only when keyboard input is active for this question
+  disableBtn.style.display = useKbd ? 'block' : 'none';
+
+  if (currentShowKana) {
+    // ── KANA ON TOP ──
     display.innerHTML = `<div class="quiz-kana">${kana}</div>`;
-    hint.textContent = t('hint_pick_romaji');
+
+    if (useKbd) {
+      // Keyboard input mode
+      hint.textContent = t('hint_type_romaji');
+      grid.style.gridTemplateColumns = '';
+      grid.innerHTML = `
+        <div class="kbd-input-wrap">
+          <input class="kbd-input" id="kbd-input" type="text"
+            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+            placeholder="…" maxlength="5">
+        </div>
+        <p class="kbd-hint" id="kbd-subhint"></p>
+      `;
+      const inp = document.getElementById('kbd-input');
+      inp.focus();
+      inp.addEventListener('input', () => {
+        const val = inp.value;
+        if (romajiMatch(val, romaji)) {
+          inp.classList.add('correct');
+          inp.disabled = true;
+          disableBtn.style.display = 'none';
+          answerKeyboard(true);
+        } else if (val.length >= romaji.length + 1) {
+          inp.classList.add('wrong');
+          setTimeout(() => {
+            if (!inp.disabled) { inp.classList.remove('wrong'); inp.value = ''; }
+          }, 400);
+        }
+      });
+    } else {
+      // Button options mode (kana on top → romaji buttons)
+      hint.textContent = t('hint_pick_romaji');
+      const pool = [...active].filter(i => i !== idx);
+      const wrongs = shuffle(pool).slice(0, optCount - 1);
+      const opts = shuffle([idx, ...wrongs]);
+      const cols = optCount <= 4 ? Math.min(optCount, 2) : optCount <= 6 ? 3 : 4;
+      grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      grid.innerHTML = '';
+      opts.forEach(oi => {
+        const [, , or] = ALL_KANA[oi];
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.dataset.idx = oi;
+        btn.innerHTML = `<span class="opt-romaji">${or}</span>`;
+        btn.onclick = () => answerBtn(btn, oi === idx);
+        grid.appendChild(btn);
+      });
+    }
   } else {
+    // ── ROMAJI ON TOP → kana buttons ──
     display.innerHTML = `<div class="quiz-romaji">${romaji}</div>`;
     hint.textContent = t('hint_pick_kana');
-  }
 
-  // build options: correct + random wrong
-  const pool = [...active].filter(i => i !== idx);
-  const wrongs = shuffle(pool).slice(0, optCount - 1);
-  const opts = shuffle([idx, ...wrongs]);
+    const pool = [...active].filter(i => i !== idx);
+    const wrongs = shuffle(pool).slice(0, optCount - 1);
+    const opts = shuffle([idx, ...wrongs]);
 
-  const grid = document.getElementById('options-grid');
-  const cols = optCount <= 4 ? Math.min(optCount, 2) : optCount <= 6 ? 3 : 4;
-  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-  grid.innerHTML = '';
-
-  opts.forEach(oi => {
-    const [, ok, or] = ALL_KANA[oi];
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.dataset.idx = oi;
-    if (showKana) {
-      // вопрос — иероглиф → ответы только транскрипция
-      btn.innerHTML = `<span class="opt-romaji">${or}</span>`;
-    } else {
-      // вопрос — транскрипция → ответы только иероглиф
+    const cols = optCount <= 4 ? Math.min(optCount, 2) : optCount <= 6 ? 3 : 4;
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.innerHTML = '';
+    opts.forEach(oi => {
+      const [, ok] = ALL_KANA[oi];
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.dataset.idx = oi;
       btn.innerHTML = `<span>${ok}</span>`;
-    }
-    btn.onclick = () => answer(btn, oi === idx);
-    grid.appendChild(btn);
-  });
+      btn.onclick = () => answerBtn(btn, oi === idx);
+      grid.appendChild(btn);
+    });
+  }
 }
 
-function answer(btn, correct) {
+function answerKeyboard(correct) {
+  if (correct) score++;
+  setTimeout(() => {
+    qIdx++;
+    if (qIdx >= totalQ) showResult();
+    else renderQ();
+  }, answerDelay);
+}
+
+function answerBtn(btn, correct) {
   const grid = document.getElementById('options-grid');
   grid.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
   btn.classList.add(correct ? 'correct' : 'wrong');
   if (correct) score++;
-
-  // если ошиблись — подсветить правильный
   if (!correct) {
     const correctIdx = quizList[qIdx];
     grid.querySelectorAll('.opt-btn').forEach(b => {
       if (parseInt(b.dataset.idx) === correctIdx) b.classList.add('correct');
     });
   }
-
   setTimeout(() => {
     qIdx++;
     if (qIdx >= totalQ) showResult();
     else renderQ();
-  }, 900);
+  }, correct ? answerDelay : 900);
 }
 
 function showResult() {
@@ -1073,6 +1453,15 @@ function showResult() {
   document.getElementById('res-emoji').textContent = emoji;
   document.getElementById('res-score').innerHTML =
     t('score_of', score, totalQ) + `<br>${pct}%`;
+
+  const elapsed = Math.round((Date.now() - quizStartTime) / 1000);
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  const timeStr = mins > 0
+    ? `${mins}м ${secs.toString().padStart(2,'0')}с`
+    : `${secs}с`;
+  document.getElementById('res-time').textContent = `⏱ ${timeStr}`;
+
   show('screen-result');
 }
 
