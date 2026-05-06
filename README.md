@@ -9,5 +9,7 @@ Interactive trainer of the Japanese alphabet hiragana.
 
 ## Functions
 
-- Configure the number of answer options (2–10)
+- Configure the number of test questions  (10–30)
+- Configure the number of answer options (4–10)
 - Enable/disable individual characters
+- Keyboard input, type the romaji directly
