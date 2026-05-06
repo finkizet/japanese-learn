@@ -20,6 +20,40 @@
     --radius: 14px;
     --ui-font: 'Nunito', sans-serif;
     --jp-font: 'Noto Serif JP', serif;
+    --grad1: #1e1a3a;
+    --grad2: #1a2a1e;
+  }
+
+  /* ── THEME: Midnight Ocean ── */
+  [data-theme="ocean"] {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2540;
+    --border: #243050;
+    --accent: #f0c040;
+    --accent2: #3b82f6;
+    --text: #e8f0ff;
+    --muted: #7a90b8;
+    --correct: #4caf82;
+    --wrong: #e05c6a;
+    --grad1: #0d1a3a;
+    --grad2: #0a1520;
+  }
+
+  /* ── THEME: Nihon — white/red ── */
+  [data-theme="nihon"] {
+    --bg: #f7f7f7;
+    --surface: #ffffff;
+    --surface2: #eeeeee;
+    --border: #d8d8d8;
+    --accent: #c0001a;
+    --accent2: #8c0013;
+    --text: #111111;
+    --muted: #777777;
+    --correct: #2e7d52;
+    --wrong: #c0001a;
+    --grad1: #f0f0f0;
+    --grad2: #fafafa;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,8 +67,8 @@
     flex-direction: column;
     align-items: center;
     padding: 24px 16px;
-    background-image: radial-gradient(ellipse at 20% 10%, #1e1a3a 0%, transparent 60%),
-                      radial-gradient(ellipse at 80% 90%, #1a2a1e 0%, transparent 60%);
+    background-image: radial-gradient(ellipse at 20% 10%, var(--grad1) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 90%, var(--grad2) 0%, transparent 60%);
   }
 
   header {
@@ -95,7 +129,7 @@
 
   .btn-primary {
     background: var(--accent);
-    color: #0f0e17;
+    color: var(--btn-primary-text, #0f0e17);
   }
   .btn-primary:hover { box-shadow: 0 0 24px rgba(232,197,71,0.4); }
 
@@ -636,7 +670,56 @@
     color: var(--text);
   }
 
-  /* ── KEYBOARD MODE TOGGLE ── */
+  /* ── THEME SWITCHER ── */
+  .theme-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .theme-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2.5px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .theme-btn:hover { transform: scale(1.15); }
+  .theme-btn.active { border-color: var(--text); }
+  .theme-btn::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+  }
+
+  /* ── NIHON LIGHT THEME OVERRIDES ── */
+  [data-theme="nihon"] {
+    --btn-primary-text: #fff;
+  }
+  [data-theme="nihon"] .tooltip-box {
+    background: #111;
+    color: #fff;
+  }
+  [data-theme="nihon"] .settings-card {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  [data-theme="nihon"] .kbd-toggle-btn {
+    background: #ccc;
+  }
+  [data-theme="nihon"] .kbd-toggle-btn.on {
+    background: var(--accent2);
+  }
+  [data-theme="nihon"] .theme-btn.active {
+    border-color: #111;
+  }
+  [data-theme="nihon"] .theme-btn::after {
+    border-color: rgba(0,0,0,0.1);
+  }
   .kbd-toggle-row {
     display: flex;
     align-items: center;
@@ -684,7 +767,12 @@
     cursor: pointer;
     letter-spacing: 0.04em;
     transition: color 0.15s, border-color 0.15s;
-    margin-top: -8px;
+    margin-top: 16px;
+    width: fit-content;
+    align-self: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
   .kbd-disable-quiz-btn:hover {
     color: var(--text);
@@ -766,7 +854,7 @@
   }
   .lang-btn.active {
     background: var(--accent2);
-    color: var(--text);
+    color: #fff;
   }
 
   /* ── FONT PICKER ── */
@@ -957,6 +1045,21 @@
       </div>
 
       <div class="settings-card">
+        <div class="settings-title" data-t="theme_title">Тема</div>
+        <div class="theme-options">
+          <button class="theme-btn active" id="theme-default" onclick="setTheme('default')"
+            style="background: linear-gradient(135deg, #0f0e17 50%, #7c6af7 50%)"
+            title="Default"></button>
+          <button class="theme-btn" id="theme-ocean" onclick="setTheme('ocean')"
+            style="background: linear-gradient(135deg, #0a0f1e 50%, #3b82f6 50%)"
+            title="Midnight Ocean"></button>
+          <button class="theme-btn" id="theme-nihon" onclick="setTheme('nihon')"
+            style="background: linear-gradient(135deg, #f7f7f7 50%, #c0001a 50%)"
+            title="Nihon"></button>
+        </div>
+      </div>
+
+      <div class="settings-card">
         <div class="settings-title" data-t="kbd_mode_title">Ввод с клавиатуры</div>
         <div class="kbd-toggle-row">
           <span class="kbd-toggle-label" id="kbd-mode-label">Включён</span>
@@ -990,7 +1093,6 @@
     <div id="q-display"></div>
   </div>
   <p class="quiz-hint" id="q-hint"></p>
-  <button class="kbd-disable-quiz-btn" id="kbd-disable-quiz" onclick="disableKbdForSession()" data-t="kbd_disable_btn" style="display:none">Переключить на варианты</button>
   <div class="options-grid" id="options-grid"></div>
 </div>
 
@@ -1076,6 +1178,7 @@ const T = {
     sec_hiragana:  'Хирагана',
     sec_katakana:  'Катакана',
     presets_title: 'ПРЕСЕТЫ',
+    theme_title:   'Тема',
   },
   en: {
     home_sub:    'Train the Japanese alphabet — one character at a time',
@@ -1113,6 +1216,7 @@ const T = {
     sec_hiragana:  'Hiragana',
     sec_katakana:  'Katakana',
     presets_title: 'PRESETS',
+    theme_title:   'Theme',
   }
 };
 
@@ -1159,6 +1263,16 @@ const FONTS = [
   { id: 'calligraphy',  family: "'Kaisei Decol', serif",         labelRu: 'Каллиграфия',   labelEn: 'Calligraphy', preview: 'あアかカ' },
 ];
 let currentFont = 'noto-serif';
+
+// ── THEME ─────────────────────────────────────────────────
+let currentTheme = 'default';
+function setTheme(id) {
+  currentTheme = id;
+  document.documentElement.setAttribute('data-theme', id === 'default' ? '' : id);
+  document.querySelectorAll('.theme-btn').forEach(b =>
+    b.classList.toggle('active', b.id === `theme-${id}`));
+  localStorage.setItem('hq_theme', id);
+}
 
 function buildFontPicker() {
   const container = document.getElementById('font-options');
@@ -1213,6 +1327,8 @@ function load() {
   if (l) setLang(l);
   const fnt = localStorage.getItem('hq_font');
   if (fnt) setFont(fnt);
+  const th = localStorage.getItem('hq_theme');
+  if (th) setTheme(th);
 }
 
 // ── GRID ──────────────────────────────────────────────────
@@ -1436,14 +1552,8 @@ function renderQ() {
   const display = document.getElementById('q-display');
   const hint = document.getElementById('q-hint');
   const grid = document.getElementById('options-grid');
-  const disableBtn = document.getElementById('kbd-disable-quiz');
 
-  // Decide if we use keyboard input for this question:
-  // only when kana is on top AND kbdMode is on AND user hasn't one-time disabled it
   const useKbd = currentShowKana && kbdMode && !kbdDisabledForSession;
-
-  // Show the one-time disable button only when keyboard input is active for this question
-  disableBtn.style.display = useKbd ? 'block' : 'none';
 
   if (currentShowKana) {
     // ── KANA ON TOP ──
@@ -1459,7 +1569,7 @@ function renderQ() {
             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             placeholder="…" maxlength="5">
         </div>
-        <p class="kbd-hint" id="kbd-subhint"></p>
+        <button class="kbd-disable-quiz-btn" id="kbd-disable-quiz" onclick="disableKbdForSession()">${t('kbd_disable_btn')}</button>
       `;
       const inp = document.getElementById('kbd-input');
       inp.focus();
@@ -1468,7 +1578,7 @@ function renderQ() {
         if (romajiMatch(val, romaji)) {
           inp.classList.add('correct');
           inp.disabled = true;
-          disableBtn.style.display = 'none';
+          document.getElementById('kbd-disable-quiz').style.display = 'none';
           answerKeyboard(true);
         } else if (val.length >= romaji.length + 1) {
           inp.classList.add('wrong');
