@@ -40,7 +40,21 @@
     --grad2: #0a1520;
   }
 
-  /* ── THEME: Nihon — white/red ── */
+  /* ── THEME: Wine ── */
+  [data-theme="wine"] {
+    --bg: #1a1008;
+    --surface: #261a0e;
+    --surface2: #33220f;
+    --border: #4a3018;
+    --accent: #c94060;
+    --accent2: #8a2030;
+    --text: #e8c8c8;
+    --muted: #9a7060;
+    --correct: #4caf82;
+    --wrong: #e05c6a;
+    --grad1: #2e180a;
+    --grad2: #1a0e04;
+  }
   [data-theme="nihon"] {
     --bg: #f7f7f7;
     --surface: #ffffff;
@@ -71,13 +85,261 @@
                       radial-gradient(ellipse at 80% 90%, var(--grad2) 0%, transparent 60%);
   }
 
+  /* ── HEADER PROFILE WIDGET ── */
   header {
     width: 100%;
-    max-width: 640px;
+    max-width: 960px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 40px;
+  }
+  .header-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 14px;
+    border: 1px solid transparent;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .header-profile:hover { border-color: var(--border); background: var(--surface); }
+  .hp-icon { color: var(--muted); display: flex; align-items: center; }
+  .hp-info { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+  .hp-level {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .hp-bar-wrap {
+    width: 80px;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .hp-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── PROFILE SCREEN ── */
+  #screen-profile { max-width: 720px; }
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+  }
+  .profile-avatar {
+    color: var(--muted);
+    background: var(--surface2);
+    border-radius: 50%;
+    width: 64px; height: 64px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+  .profile-xp-block { flex: 1; }
+  .profile-level-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .profile-level-label { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .profile-level-val { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 700; color: var(--accent); line-height: 1; }
+  .profile-bar-wrap {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .profile-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .profile-xp-label { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .profile-stats-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+  .profile-stat-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+  }
+  .profile-stat-val { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .profile-stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+  .profile-kana-section { width: 100%; }
+  .profile-kana-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sort-toggle {
+    display: flex;
+    gap: 6px;
+  }
+  .sort-btn {
+    font-family: var(--ui-font);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sort-btn:hover { color: var(--text); border-color: var(--muted); }
+  .sort-btn.active { background: rgba(124,106,247,0.18); border-color: var(--accent2); color: var(--text); }
+
+  /* overlay */
+  .kana-detail-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    background: transparent;
+  }
+  .profile-kana-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .profile-kana-btn {
+    width: 60px; height: 60px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: transform 0.12s;
+    position: relative;
+  }
+  .profile-kana-btn:hover { transform: scale(1.12); z-index: 2; }
+  .profile-kana-btn .pk-kana { font-family: var(--jp-font); font-size: 1.4rem; line-height: 1; color: #fff; }
+  .profile-kana-btn.grade-none .pk-kana { color: var(--muted); }
+  .profile-kana-btn .pk-grade {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    font-family: var(--ui-font);
+  }
+  .pk-grade-plain { color: rgba(255,255,255,0.9); }
+  .profile-kana-btn.grade-none .pk-grade-plain { color: var(--muted); }
+  /* unseen */
+  .profile-kana-btn.grade-none { background: var(--surface2); border: 1.5px solid var(--border); }
+  /* S */
+  .profile-kana-btn.grade-S { background: linear-gradient(160deg, #ff4923, #ffaf3e); }
+  /* A */
+  .profile-kana-btn.grade-A { background: linear-gradient(160deg, #65d60c, #308f04); }
+  /* B */
+  .profile-kana-btn.grade-B { background: linear-gradient(160deg, #0368ef, #0f41b3); }
+  /* C */
+  .profile-kana-btn.grade-C { background: linear-gradient(160deg, #c917e2, #8c16ce); }
+  /* D */
+  .profile-kana-btn.grade-D { background: linear-gradient(160deg, #e20012, #89000b); }
+  /* F */
+  .profile-kana-btn.grade-F { background: #333333; }
+
+  /* ── KANA DETAIL POPUP ── */
+  .kana-detail-popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    z-index: 100;
+    min-width: 220px;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+  .kana-detail-kana { font-family: var(--jp-font); font-size: 3rem; line-height: 1; margin-bottom: 4px; }
+  .kana-detail-romaji { font-family: 'DM Mono', monospace; font-size: 1rem; color: var(--muted); margin-bottom: 10px; }
+  .kana-detail-grade {
+    font-size: 1.6rem;
+    font-weight: 900;
+    margin-bottom: 14px;
+  }
+  .kana-detail-grade.grade-S {
+    background: linear-gradient(160deg, #ff4923, #ffaf3e);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .kana-detail-grade.grade-A {
+    background: linear-gradient(160deg, #65d60c, #308f04);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .kana-detail-grade.grade-B {
+    background: linear-gradient(160deg, #0368ef, #0f41b3);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .kana-detail-grade.grade-C {
+    background: linear-gradient(160deg, #c917e2, #8c16ce);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .kana-detail-grade.grade-D {
+    background: linear-gradient(160deg, #e20012, #89000b);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .kana-detail-grade.grade-F { color: #555; }
+  .kana-detail-grade.grade-none { display: none; }
+  .kana-detail-row { font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .kana-detail-row strong { color: var(--text); }
+  .kd-correct { color: var(--correct) !important; }
+  .kd-wrong   { color: var(--wrong)   !important; }
+  .kd-sep     { color: var(--border); }
+  .kd-mastery-bar-wrap {
+    width: 100%;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+  .kd-mastery-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #0368ef, #65d60c);
+    transition: width 0.3s ease;
+  }
+  .kana-detail-close {
+    position: absolute; top: 10px; right: 12px;
+    background: none; border: none; color: var(--muted);
+    font-size: 1rem; cursor: pointer;
   }
 
   .logo {
@@ -684,18 +946,11 @@
     border: 2.5px solid transparent;
     cursor: pointer;
     transition: transform 0.15s, border-color 0.15s;
-    position: relative;
     flex-shrink: 0;
+    outline: none;
   }
   .theme-btn:hover { transform: scale(1.15); }
   .theme-btn.active { border-color: var(--text); }
-  .theme-btn::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,0.15);
-  }
 
   /* ── NIHON LIGHT THEME OVERRIDES ── */
   [data-theme="nihon"] {
@@ -921,6 +1176,18 @@
 
 <header>
   <div class="logo">日本語<span>quiz</span></div>
+  <div class="header-profile" onclick="showProfile()">
+    <div class="hp-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="8" r="4" fill="currentColor"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="hp-info">
+      <div class="hp-level" id="hp-level">1</div>
+      <div class="hp-bar-wrap"><div class="hp-bar" id="hp-bar"></div></div>
+    </div>
+  </div>
 </header>
 
 <!-- HOME -->
@@ -974,7 +1241,7 @@
         <div class="settings-title" data-t="delay_title">Задержка</div>
         <div class="range-row">
           <input type="range" id="answer-delay" min="0" max="900" value="700" step="50"
-                 oninput="document.getElementById('answer-delay-val').textContent=this.value+'мс'; save()">
+                 oninput="document.getElementById('answer-delay-val').textContent=this.value+(lang==='ru'?'мс':'ms'); save()">
           <div class="range-val" id="answer-delay-val">700мс</div>
         </div>
         <p class="ratio-hint" data-t="delay_hint">после правильного ответа</p>
@@ -1053,6 +1320,9 @@
           <button class="theme-btn" id="theme-ocean" onclick="setTheme('ocean')"
             style="background: linear-gradient(135deg, #0a0f1e 50%, #3b82f6 50%)"
             title="Midnight Ocean"></button>
+          <button class="theme-btn" id="theme-wine" onclick="setTheme('wine')"
+            style="background: linear-gradient(135deg, #1a1008 50%, #d4546a 50%)"
+            title="Wine"></button>
           <button class="theme-btn" id="theme-nihon" onclick="setTheme('nihon')"
             style="background: linear-gradient(135deg, #f7f7f7 50%, #c0001a 50%)"
             title="Nihon"></button>
@@ -1105,6 +1375,83 @@
   <div class="btn-group">
     <button class="btn btn-primary" onclick="startQuiz()">▶ <span data-t="again">Ещё раз</span></button>
     <button class="btn btn-secondary" onclick="showHome()"><span data-t="menu">Меню</span></button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="screen" id="screen-profile">
+  <button class="back-btn" onclick="showHome()">← <span data-t="back">назад</span></button>
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" fill="currentColor"/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="profile-xp-block">
+      <div class="profile-level-row">
+        <span class="profile-level-label" data-t="level_label">Уровень</span>
+        <span class="profile-level-val" id="profile-level">1</span>
+      </div>
+      <div class="profile-bar-wrap">
+        <div class="profile-bar" id="profile-bar"></div>
+      </div>
+      <div class="profile-xp-label" id="profile-xp-label"></div>
+    </div>
+  </div>
+  <div class="profile-stats-row">
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="stat-total"></div>
+      <div class="profile-stat-label" data-t="stat_answers">Ответов</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="stat-accuracy"></div>
+      <div class="profile-stat-label" data-t="stat_accuracy">Точность</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="stat-tests"></div>
+      <div class="profile-stat-label" data-t="stat_tests">Тестов</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="stat-time"></div>
+      <div class="profile-stat-label" data-t="stat_time">Время</div>
+    </div>
+  </div>
+  <div class="profile-kana-section">
+    <div class="profile-kana-header">
+      <div class="settings-title" data-t="stat_kana_title" style="margin-bottom:0">Иероглифы</div>
+      <div class="sort-toggle">
+        <button class="sort-btn active" id="sort-default"  onclick="setSortMode('default')"  data-t="sort_default">По умолчанию</button>
+        <button class="sort-btn" id="sort-accuracy" onclick="setSortMode('accuracy')" data-t="sort_accuracy">Точность</button>
+        <button class="sort-btn" id="sort-time"     onclick="setSortMode('time')"     data-t="sort_time">Время</button>
+        <button class="sort-btn" id="sort-mastery"  onclick="setSortMode('mastery')"  data-t="sort_mastery">Мастерство</button>
+      </div>
+    </div>
+    <div class="profile-kana-grid" id="profile-kana-grid"></div>
+  </div>
+  <!-- overlay to close detail popup -->
+  <div class="kana-detail-overlay" id="kana-detail-overlay" onclick="closeKanaDetail()" style="display:none"></div>
+  <!-- kana detail popup -->
+  <div class="kana-detail-popup" id="kana-detail" style="display:none">
+    <div class="kana-detail-kana" id="kd-kana"></div>
+    <div class="kana-detail-romaji" id="kd-romaji"></div>
+    <div class="kana-detail-grade" id="kd-grade"></div>
+    <div class="kana-detail-row"><span>🎯</span><span data-t="kd_accuracy">Точность:</span> <strong id="kd-acc"></strong></div>
+    <div class="kana-detail-row"><span>⏱️</span><span data-t="kd_avg_time">Среднее время:</span> <strong id="kd-time"></strong></div>
+    <div class="kana-detail-row">
+      <span>📊</span><span data-t="kd_attempts">Попыток:</span>
+      <strong id="kd-attempts-total"></strong>
+      <span class="kd-sep">·</span>
+      <strong class="kd-correct" id="kd-correct"></strong>
+      <span class="kd-sep">/</span>
+      <strong class="kd-wrong" id="kd-wrong"></strong>
+    </div>
+    <div class="kana-detail-row">
+      <span>⭐</span><span data-t="kd_mastery">Мастерство:</span>
+      <strong id="kd-mastery"></strong>
+    </div>
+    <div class="kd-mastery-bar-wrap"><div class="kd-mastery-bar" id="kd-mastery-bar"></div></div>
+    <button class="kana-detail-close" onclick="closeKanaDetail()">✕</button>
   </div>
 </div>
 
@@ -1179,6 +1526,20 @@ const T = {
     sec_katakana:  'Катакана',
     presets_title: 'ПРЕСЕТЫ',
     theme_title:   'Тема',
+    level_label:   'Уровень',
+    stat_answers:  'Ответов',
+    stat_accuracy: 'Точность',
+    stat_tests:    'Тестов',
+    stat_time:     'Общее время',
+    stat_kana_title: 'Иероглифы',
+    kd_accuracy:   'Точность:',
+    kd_avg_time:   'Среднее время:',
+    kd_attempts:   'Попыток:',
+    kd_mastery:    'Мастерство:',
+    sort_default:  'По умолчанию',
+    sort_accuracy: 'Точность',
+    sort_time:     'Время',
+    sort_mastery:  'Мастерство',
   },
   en: {
     home_sub:    'Train the Japanese alphabet — one character at a time',
@@ -1217,6 +1578,20 @@ const T = {
     sec_katakana:  'Katakana',
     presets_title: 'PRESETS',
     theme_title:   'Theme',
+    level_label:   'Level',
+    stat_answers:  'Answers',
+    stat_accuracy: 'Accuracy',
+    stat_tests:    'Tests',
+    stat_time:     'Total time',
+    stat_kana_title: 'Characters',
+    kd_accuracy:   'Accuracy:',
+    kd_avg_time:   'Avg. time:',
+    kd_attempts:   'Attempts:',
+    kd_mastery:    'Mastery:',
+    sort_default:  'Default',
+    sort_accuracy: 'Accuracy',
+    sort_time:     'Time',
+    sort_mastery:  'Mastery',
   }
 };
 
@@ -1242,6 +1617,10 @@ function setLang(l) {
   if (fp && fp.children.length > 0) buildFontPicker();
   // update kbd mode label
   updateKbdModeUI();
+  // update delay unit
+  const delayVal = document.getElementById('answer-delay');
+  const delayDisplay = document.getElementById('answer-delay-val');
+  if (delayVal && delayDisplay) delayDisplay.textContent = delayVal.value + (l === 'ru' ? 'мс' : 'ms');
 }
 
 function t(key, ...args) {
@@ -1315,7 +1694,7 @@ function load() {
   const qc = localStorage.getItem('hq_qcount');
   if (qc) { document.getElementById('q-count').value = qc; document.getElementById('q-count-val').textContent = qc; }
   const dl = localStorage.getItem('hq_delay');
-  if (dl) { document.getElementById('answer-delay').value = dl; document.getElementById('answer-delay-val').textContent = dl + 'мс'; }
+  if (dl) { document.getElementById('answer-delay').value = dl; document.getElementById('answer-delay-val').textContent = dl + (lang === 'ru' ? 'мс' : 'ms'); }
   const rt = localStorage.getItem('hq_ratio');
   if (rt) { document.getElementById('kana-ratio').value = rt; document.getElementById('kana-ratio-val').textContent = rt + '%'; }
   const kb = localStorage.getItem('hq_kbd');
@@ -1509,6 +1888,268 @@ function disableKbdForSession() {
   renderQ();
 }
 
+// ── XP & LEVEL ────────────────────────────────────────────
+let xp = 0, level = 1, testsCompleted = 0, totalTestTime = 0;
+let kanaStats = {}; // { [idx]: { correct, total, totalTime, mastery } }
+
+function xpForLevel(lvl) { return 100 + (lvl - 1) * 10; }
+
+function addXp(amount) {
+  xp += amount;
+  while (xp >= xpForLevel(level)) {
+    xp -= xpForLevel(level);
+    level++;
+  }
+  saveUser();
+  updateHpWidget();
+}
+
+function updateHpWidget() {
+  document.getElementById('hp-level').textContent = level;
+  const pct = xp / xpForLevel(level) * 100;
+  document.getElementById('hp-bar').style.width = pct + '%';
+}
+
+function speedMultiplier(secPerQ) {
+  if (secPerQ < 1.5) return 2;
+  if (secPerQ < 3)   return 1.5;
+  if (secPerQ < 5)   return 1.25;
+  return 1;
+}
+
+// mastery brackets: [threshold, penalty, bonus]
+const MASTERY_TABLE = [
+  [90, 10, 0.50],
+  [80,  9, 0.75],
+  [70,  8, 0.80],
+  [60,  7, 0.85],
+  [50,  6, 0.90],
+  [40,  5, 0.90],
+  [30,  4, 0.95],
+  [20,  3, 0.95],
+  [10,  2, 1.00],
+  [ 1,  1, 1.00],
+  [ 0,  0, 1.00], // 0% mastery: no penalty, full bonus (first attempt)
+];
+
+function getMasteryParams(mastery) {
+  for (const [thresh, penalty, bonus] of MASTERY_TABLE) {
+    if (mastery >= thresh) return { penalty, bonus };
+  }
+  return { penalty: 0, bonus: 1.00 };
+}
+
+function recordAnswer(kanaIdx, correct, timeSec) {
+  if (!kanaStats[kanaIdx]) kanaStats[kanaIdx] = { correct: 0, total: 0, totalTime: 0, mastery: 0 };
+  const s = kanaStats[kanaIdx];
+  s.mastery = s.mastery ?? 0;
+  s.totalTime = s.totalTime ?? 0;
+  s.total++;
+  s.totalTime += timeSec;
+
+  const { penalty, bonus } = getMasteryParams(s.mastery);
+
+  if (correct) {
+    s.correct++;
+    s.mastery = Math.min(100, s.mastery + bonus);
+    const mult = speedMultiplier(timeSec);
+    addXp(Math.round(10 * mult));
+  } else {
+    s.mastery = Math.max(0, s.mastery - penalty);
+  }
+  saveUser();
+}
+
+function getGrade(correct, total) {
+  if (total === 0) return 'none';
+  const pct = correct / total * 100;
+  if (pct >= 94.00) return 'S';
+  if (pct >= 80.00) return 'A';
+  if (pct >= 67.00) return 'B';
+  if (pct >= 50.00) return 'C';
+  if (pct >= 16.67) return 'D';
+  return 'F';
+}
+
+function saveUser() {
+  localStorage.setItem('hq_xp', xp);
+  localStorage.setItem('hq_level', level);
+  localStorage.setItem('hq_tests', testsCompleted);
+  localStorage.setItem('hq_total_time', totalTestTime);
+  localStorage.setItem('hq_kstats', JSON.stringify(kanaStats));
+}
+
+function loadUser() {
+  xp    = parseInt(localStorage.getItem('hq_xp') || '0');
+  level = parseInt(localStorage.getItem('hq_level') || '1');
+  testsCompleted = parseInt(localStorage.getItem('hq_tests') || '0');
+  totalTestTime  = parseInt(localStorage.getItem('hq_total_time') || '0');
+  const ks = localStorage.getItem('hq_kstats');
+  if (ks) {
+    kanaStats = JSON.parse(ks);
+    let migrated = false;
+    Object.keys(kanaStats).forEach(k => {
+      const s = kanaStats[k];
+      if (s.mastery   == null) { s.mastery   = 0; migrated = true; }
+      if (s.totalTime == null) { s.totalTime = 0; migrated = true; }
+      if (s.correct   == null) { s.correct   = 0; migrated = true; }
+      if (s.total     == null) { s.total     = 0; migrated = true; }
+    });
+    if (migrated) localStorage.setItem('hq_kstats', JSON.stringify(kanaStats));
+  }
+  updateHpWidget();
+}
+
+// ── PROFILE SCREEN ────────────────────────────────────────
+function showProfile() {
+  // stats
+  let totalAnswers = 0, totalCorrect = 0;
+  Object.values(kanaStats).forEach(s => { totalAnswers += s.total; totalCorrect += s.correct; });
+  document.getElementById('stat-total').textContent = totalAnswers;
+  document.getElementById('stat-accuracy').textContent = totalAnswers > 0
+    ? Math.round(totalCorrect / totalAnswers * 100) + '%' : '—';
+  document.getElementById('stat-tests').textContent = testsCompleted;
+  // format total time
+  const th = Math.floor(totalTestTime / 3600);
+  const tm = Math.floor((totalTestTime % 3600) / 60);
+  const ts = totalTestTime % 60;
+  const timeDisplay = th > 0
+    ? `${th}ч ${tm.toString().padStart(2,'0')}м`
+    : tm > 0
+    ? `${tm}м ${ts.toString().padStart(2,'0')}с`
+    : `${ts}с`;
+  document.getElementById('stat-time').textContent = timeDisplay;
+
+  // xp bar
+  document.getElementById('profile-level').textContent = level;
+  document.getElementById('profile-bar').style.width = (xp / xpForLevel(level) * 100) + '%';
+  document.getElementById('profile-xp-label').textContent = `${xp} / ${xpForLevel(level)} XP`;
+
+  // kana grid
+  buildProfileKanaGrid();
+  show('screen-profile');
+}
+
+let profileSortMode = 'default';
+
+function setSortMode(mode) {
+  profileSortMode = mode;
+  document.querySelectorAll('.sort-btn').forEach(b =>
+    b.classList.toggle('active', b.id === `sort-${mode}`));
+  buildProfileKanaGrid();
+}
+
+const GRADE_COLORS = {
+  S: '#ffaf3e',
+  A: '#65d60c',
+  B: '#3d80f5',
+  C: '#d44ef0',
+  D: '#e84040',
+  F: '#888888',
+};
+
+function getKanaBtnLabel(idx) {
+  const s = kanaStats[idx];
+  if (profileSortMode === 'accuracy') {
+    if (!s || s.total === 0) return '';
+    return Math.round(s.correct / s.total * 100) + '%';
+  }
+  if (profileSortMode === 'time') {
+    if (!s || s.total === 0) return '';
+    return (s.totalTime / s.total).toFixed(1) + (lang === 'ru' ? 'с' : 's');
+  }
+  if (profileSortMode === 'mastery') {
+    if (!s || s.total === 0) return '';
+    return Math.round(s.mastery) + '%';
+  }
+  // default: grade letter
+  if (!s || s.total === 0) return '';
+  return getGrade(s.correct, s.total);
+}
+
+function getKanaBtnLabelStyle(idx) {
+  return 'color:rgba(255,255,255,0.9)';
+}
+
+function closeKanaDetail() {
+  document.getElementById('kana-detail').style.display = 'none';
+  document.getElementById('kana-detail-overlay').style.display = 'none';
+}
+
+function buildProfileKanaGrid() {
+  const grid = document.getElementById('profile-kana-grid');
+  grid.innerHTML = '';
+
+  let items = ALL_KANA.map(([, kana, romaji], idx) => ({ idx, kana, romaji }));
+
+  if (profileSortMode === 'accuracy') {
+    items.sort((a, b) => {
+      const sa = kanaStats[a.idx], sb = kanaStats[b.idx];
+      const pa = sa && sa.total > 0 ? sa.correct / sa.total : -1;
+      const pb = sb && sb.total > 0 ? sb.correct / sb.total : -1;
+      if (pb !== pa) return pb - pa;
+      return a.idx - b.idx;
+    });
+  } else if (profileSortMode === 'time') {
+    items.sort((a, b) => {
+      const sa = kanaStats[a.idx], sb = kanaStats[b.idx];
+      const ta = sa && sa.total > 0 ? sa.totalTime / sa.total : Infinity;
+      const tb = sb && sb.total > 0 ? sb.totalTime / sb.total : Infinity;
+      if (ta !== tb) return ta - tb;
+      return a.idx - b.idx;
+    });
+  } else if (profileSortMode === 'mastery') {
+    items.sort((a, b) => {
+      const sa = kanaStats[a.idx], sb = kanaStats[b.idx];
+      const ma = sa ? sa.mastery : -1;
+      const mb = sb ? sb.mastery : -1;
+      if (mb !== ma) return mb - ma;
+      return a.idx - b.idx;
+    });
+  }
+
+  items.forEach(({ idx, kana }) => {
+    const s = kanaStats[idx];
+    const grade = s ? getGrade(s.correct, s.total) : 'none';
+    const label = getKanaBtnLabel(idx);
+    const labelStyle = getKanaBtnLabelStyle(idx);
+    const btn = document.createElement('button');
+    btn.className = `profile-kana-btn grade-${grade}`;
+    btn.innerHTML = `
+      <span class="pk-kana">${kana}</span>
+      ${label ? `<span class="pk-grade" style="${labelStyle}">${label}</span>` : ''}
+    `;
+    btn.onclick = () => showKanaDetail(idx);
+    grid.appendChild(btn);
+  });
+}
+
+function showKanaDetail(idx) {
+  const [, kana, romaji] = ALL_KANA[idx];
+  const s = kanaStats[idx];
+  const grade = s ? getGrade(s.correct, s.total) : 'none';
+  const pct = s && s.total > 0 ? Math.round(s.correct / s.total * 100) + '%' : '—';
+  const avgTime = s && s.total > 0 ? (s.totalTime / s.total).toFixed(1) + (lang === 'ru' ? 'с' : 's') : '—';
+  const mastery = s ? ((s.mastery ?? 0).toFixed(1) + '%') : '0%';
+  const masteryPct = s ? (s.mastery ?? 0) : 0;
+  const wrong = s ? ((s.total ?? 0) - (s.correct ?? 0)) : 0;
+
+  document.getElementById('kd-kana').textContent = kana;
+  document.getElementById('kd-romaji').textContent = romaji;
+  const gradeEl = document.getElementById('kd-grade');
+  gradeEl.textContent = grade !== 'none' ? grade : '';
+  gradeEl.className = `kana-detail-grade grade-${grade}`;
+  document.getElementById('kd-acc').textContent = pct;
+  document.getElementById('kd-time').textContent = avgTime;
+  document.getElementById('kd-attempts-total').textContent = s ? s.total : 0;
+  document.getElementById('kd-correct').textContent = s ? s.correct : 0;
+  document.getElementById('kd-wrong').textContent = wrong;
+  document.getElementById('kd-mastery').textContent = mastery;
+  document.getElementById('kd-mastery-bar').style.width = masteryPct + '%';
+  document.getElementById('kana-detail').style.display = 'block';
+  document.getElementById('kana-detail-overlay').style.display = 'block';
+}
+
 // ── SCREENS ──────────────────────────────────────────────
 function show(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -1549,6 +2190,7 @@ function renderQ() {
   const [, kana, romaji] = ALL_KANA[idx];
 
   currentShowKana = Math.random() * 100 < kanaRatio;
+  window._qStartTime = Date.now();
   const display = document.getElementById('q-display');
   const hint = document.getElementById('q-hint');
   const grid = document.getElementById('options-grid');
@@ -1631,6 +2273,8 @@ function renderQ() {
 }
 
 function answerKeyboard(correct) {
+  const timeSec = (Date.now() - window._qStartTime) / 1000;
+  recordAnswer(quizList[qIdx], correct, timeSec);
   if (correct) score++;
   setTimeout(() => {
     qIdx++;
@@ -1640,6 +2284,8 @@ function answerKeyboard(correct) {
 }
 
 function answerBtn(btn, correct) {
+  const timeSec = (Date.now() - window._qStartTime) / 1000;
+  recordAnswer(quizList[qIdx], correct, timeSec);
   const grid = document.getElementById('options-grid');
   grid.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
   btn.classList.add(correct ? 'correct' : 'wrong');
@@ -1658,6 +2304,11 @@ function answerBtn(btn, correct) {
 }
 
 function showResult() {
+  testsCompleted++;
+  const elapsed = Math.round((Date.now() - quizStartTime) / 1000);
+  totalTestTime += elapsed;
+  saveUser();
+
   document.getElementById('q-bar').style.width = '100%';
   const pct = Math.round(score / totalQ * 100);
   let emoji = pct >= 80 ? '🎉' : pct >= 50 ? '😊' : '😅';
@@ -1665,7 +2316,6 @@ function showResult() {
   document.getElementById('res-score').innerHTML =
     t('score_of', score, totalQ) + `<br>${pct}%`;
 
-  const elapsed = Math.round((Date.now() - quizStartTime) / 1000);
   const mins = Math.floor(elapsed / 60);
   const secs = elapsed % 60;
   const timeStr = mins > 0
@@ -1688,6 +2338,7 @@ function shuffle(arr) {
 
 // ── INIT ──────────────────────────────────────────────────
 load();
+loadUser();
 </script>
 </body>
 </html>
