@@ -943,14 +943,16 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 2.5px solid transparent;
+    border: none;
     cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s;
+    transition: transform 0.15s, outline-color 0.15s;
     flex-shrink: 0;
-    outline: none;
+    outline: 2.5px solid transparent;
+    outline-offset: 2px;
+    overflow: hidden;
   }
   .theme-btn:hover { transform: scale(1.15); }
-  .theme-btn.active { border-color: var(--text); }
+  .theme-btn.active { outline-color: var(--text); }
 
   /* ── NIHON LIGHT THEME OVERRIDES ── */
   [data-theme="nihon"] {
@@ -1152,6 +1154,7 @@
     gap: 6px;
     margin-bottom: 8px;
     overflow: visible;
+    flex-wrap: wrap;
   }
   .section-btn {
     padding: 5px 14px;
@@ -1290,8 +1293,9 @@
         </div>
         <div class="preset-divider"></div>
         <div class="section-toggle">
-          <button class="section-btn active has-tooltip" id="sec-hiragana" onclick="setSection('hiragana')" data-tip="Хирагана" data-t-tip="sec_hiragana">ひらがな</button>
-          <button class="section-btn has-tooltip" id="sec-katakana" onclick="setSection('katakana')" data-tip="Катакана" data-t-tip="sec_katakana">カタカナ</button>
+          <button class="section-btn active has-tooltip" id="sec-hiragana"  onclick="setSection('hiragana')"  data-tip="Хирагана"             data-t-tip="sec_hiragana">ひらがな</button>
+          <button class="section-btn has-tooltip"        id="sec-katakana"  onclick="setSection('katakana')"  data-tip="Катакана"             data-t-tip="sec_katakana">カタカナ</button>
+          <button class="section-btn has-tooltip"        id="sec-dakuten"   onclick="setSection('dakuten')"   data-tip="Дакутен・Хандакутен"  data-t-tip="sec_dakuten">が゛ぱ゜</button>
         </div>
         <div class="kana-grid" id="kana-grid"></div>
         <div class="grid-actions">
@@ -1469,7 +1473,15 @@ const HIRAGANA = [
   ["ら行","ら","ra"], ["ら行","り","ri"], ["ら行","る","ru"], ["ら行","れ","re"], ["ら行","ろ","ro"],
   ["わ行","わ","wa"], ["わ行","を","wo"], ["ん","ん","n"],
 ];
-
+const HIRAGANA_DAKUTEN = [
+  ["が行","が","ga"], ["が行","ぎ","gi"], ["が行","ぐ","gu"], ["が行","げ","ge"], ["が行","ご","go"],
+  ["ざ行","ざ","za"], ["ざ行","じ","ji"], ["ざ行","ず","zu"], ["ざ行","ぜ","ze"], ["ざ行","ぞ","zo"],
+  ["だ行","だ","da"], ["だ行","ぢ","ji"], ["だ行","づ","zu"], ["だ行","で","de"], ["だ行","ど","do"],
+  ["ば行","ば","ba"], ["ば行","び","bi"], ["ば行","ぶ","bu"], ["ば行","べ","be"], ["ば行","ぼ","bo"],
+];
+const HIRAGANA_HANDAKUTEN = [
+  ["ぱ行","ぱ","pa"], ["ぱ行","ぴ","pi"], ["ぱ行","ぷ","pu"], ["ぱ行","ぺ","pe"], ["ぱ行","ぽ","po"],
+];
 const KATAKANA = [
   ["ア行","ア","a"],  ["ア行","イ","i"],  ["ア行","ウ","u"],  ["ア行","エ","e"],  ["ア行","オ","o"],
   ["カ行","カ","ka"], ["カ行","キ","ki"], ["カ行","ク","ku"], ["カ行","ケ","ke"], ["カ行","コ","ko"],
@@ -1482,10 +1494,22 @@ const KATAKANA = [
   ["ラ行","ラ","ra"], ["ラ行","リ","ri"], ["ラ行","ル","ru"], ["ラ行","レ","re"], ["ラ行","ロ","ro"],
   ["ワ行","ワ","wa"], ["ワ行","ヲ","wo"], ["ン","ン","n"],
 ];
+const KATAKANA_DAKUTEN = [
+  ["ガ行","ガ","ga"], ["ガ行","ギ","gi"], ["ガ行","グ","gu"], ["ガ行","ゲ","ge"], ["ガ行","ゴ","go"],
+  ["ザ行","ザ","za"], ["ザ行","ジ","ji"], ["ザ行","ズ","zu"], ["ザ行","ゼ","ze"], ["ザ行","ゾ","zo"],
+  ["ダ行","ダ","da"], ["ダ行","ヂ","ji"], ["ダ行","ヅ","zu"], ["ダ行","デ","de"], ["ダ行","ド","do"],
+  ["バ行","バ","ba"], ["バ行","ビ","bi"], ["バ行","ブ","bu"], ["バ行","ベ","be"], ["バ行","ボ","bo"],
+];
+const KATAKANA_HANDAKUTEN = [
+  ["パ行","パ","pa"], ["パ行","ピ","pi"], ["パ行","プ","pu"], ["パ行","ペ","pe"], ["パ行","ポ","po"],
+];
 
-// Combined: hiragana indices 0..N-1, katakana indices N..
-const ALL_KANA = [...HIRAGANA, ...KATAKANA];
-const HIRA_END = HIRAGANA.length; // first katakana index
+const ALL_KANA = [...HIRAGANA, ...HIRAGANA_DAKUTEN, ...HIRAGANA_HANDAKUTEN, ...KATAKANA, ...KATAKANA_DAKUTEN, ...KATAKANA_HANDAKUTEN];
+const HIRA_END      = HIRAGANA.length;
+const HIRA_DAK_END  = HIRA_END + HIRAGANA_DAKUTEN.length;
+const HIRA_HAN_END  = HIRA_DAK_END + HIRAGANA_HANDAKUTEN.length;
+const KATA_END      = HIRA_HAN_END + KATAKANA.length;
+const KATA_DAK_END  = KATA_END + KATAKANA_DAKUTEN.length;
 
 // ── TRANSLATIONS ──────────────────────────────────────────
 const T = {
@@ -1524,6 +1548,7 @@ const T = {
     view_compact:  'Компактно',
     sec_hiragana:  'Хирагана',
     sec_katakana:  'Катакана',
+    sec_dakuten:   'Дакутен・Хандакутен',
     presets_title: 'ПРЕСЕТЫ',
     theme_title:   'Тема',
     level_label:   'Уровень',
@@ -1576,6 +1601,7 @@ const T = {
     view_compact:  'Compact',
     sec_hiragana:  'Hiragana',
     sec_katakana:  'Katakana',
+    sec_dakuten:   'Dakuten・Handakuten',
     presets_title: 'PRESETS',
     theme_title:   'Theme',
     level_label:   'Level',
@@ -1701,29 +1727,43 @@ function load() {
   if (kb !== null) kbdMode = kb === '1';
   updateKbdModeUI();
   const v = localStorage.getItem('hq_view');
-  if (v) setView(v);
+  setView(v || 'compact');
   const l = localStorage.getItem('hq_lang');
-  if (l) setLang(l);
+  if (l) {
+    setLang(l);
+  } else {
+    const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    setLang(browserLang.startsWith('ru') ? 'ru' : 'en');
+  }
   const fnt = localStorage.getItem('hq_font');
-  if (fnt) setFont(fnt);
+  setFont(fnt || 'noto-sans');
   const th = localStorage.getItem('hq_theme');
   if (th) setTheme(th);
 }
 
 // ── GRID ──────────────────────────────────────────────────
-const ROW_SHORT_H = {"あ行":"あ","か行":"か","さ行":"さ","た行":"た","な行":"な","は行":"は","ま行":"ま","や行":"や","ら行":"ら","わ行":"わ","ん":"ん"};
-const ROW_SHORT_K = {"ア行":"ア","カ行":"カ","サ行":"サ","タ行":"タ","ナ行":"ナ","ハ行":"ハ","マ行":"マ","ヤ行":"ヤ","ラ行":"ラ","ワ行":"ワ","ン":"ン"};
+const DAKUTEN_ALL = [...HIRAGANA_DAKUTEN, ...HIRAGANA_HANDAKUTEN, ...KATAKANA_DAKUTEN, ...KATAKANA_HANDAKUTEN];
+const ROW_SHORT_H   = {"あ行":"あ","か行":"か","さ行":"さ","た行":"た","な行":"な","は行":"は","ま行":"ま","や行":"や","ら行":"ら","わ行":"わ","ん":"ん"};
+const ROW_SHORT_K   = {"ア行":"ア","カ行":"カ","サ行":"サ","タ行":"タ","ナ行":"ナ","ハ行":"ハ","マ行":"マ","ヤ行":"ヤ","ラ行":"ラ","ワ行":"ワ","ン":"ン"};
+const ROW_SHORT_DAK = {
+  "が行":"が","ざ行":"ざ","だ行":"だ","ば行":"ば","ぱ行":"ぱ",
+  "ガ行":"ガ","ザ行":"ザ","ダ行":"ダ","バ行":"バ","パ行":"パ",
+};
 
 function setSection(sec) {
   currentSection = sec;
-  document.getElementById('sec-hiragana').classList.toggle('active', sec === 'hiragana');
-  document.getElementById('sec-katakana').classList.toggle('active', sec === 'katakana');
+  ['hiragana','katakana','dakuten'].forEach(s =>
+    document.getElementById(`sec-${s}`).classList.toggle('active', s === sec));
   buildGrid();
 }
 
 function getSectionData() {
-  if (currentSection === 'hiragana') return { data: HIRAGANA, offset: 0, rowShort: ROW_SHORT_H };
-  return { data: KATAKANA, offset: HIRA_END, rowShort: ROW_SHORT_K };
+  switch(currentSection) {
+    case 'hiragana': return { data: HIRAGANA,    offset: 0,           rowShort: ROW_SHORT_H   };
+    case 'katakana': return { data: KATAKANA,    offset: HIRA_HAN_END,rowShort: ROW_SHORT_K   };
+    case 'dakuten':  return { data: DAKUTEN_ALL, offset: HIRA_END,    rowShort: ROW_SHORT_DAK };
+  }
+  return { data: HIRAGANA, offset: 0, rowShort: ROW_SHORT_H };
 }
 
 function makeKanaBtn(i) {
@@ -1884,8 +1924,30 @@ function disableKbdForSession() {
   kbdDisabledForSession = false;
   localStorage.setItem('hq_kbd', '0');
   updateKbdModeUI();
-  document.getElementById('kbd-disable-quiz').style.display = 'none';
-  renderQ();
+  // redraw current question without re-rolling currentShowKana
+  const idx = quizList[qIdx];
+  const [, kana, romaji] = ALL_KANA[idx];
+  const hint = document.getElementById('q-hint');
+  const grid = document.getElementById('options-grid');
+  const display = document.getElementById('q-display');
+
+  display.innerHTML = `<div class="quiz-kana">${kana}</div>`;
+  hint.textContent = t('hint_pick_romaji');
+  const pool = [...active].filter(i => i !== idx);
+  const wrongs = shuffle(pool).slice(0, optCount - 1);
+  const opts = shuffle([idx, ...wrongs]);
+  const cols = optCount <= 4 ? Math.min(optCount, 2) : optCount <= 6 ? 3 : 4;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  grid.innerHTML = '';
+  opts.forEach(oi => {
+    const [, , or] = ALL_KANA[oi];
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.dataset.idx = oi;
+    btn.innerHTML = `<span class="opt-romaji">${or}</span>`;
+    btn.onclick = () => answerBtn(btn, oi === idx);
+    grid.appendChild(btn);
+  });
 }
 
 // ── XP & LEVEL ────────────────────────────────────────────
