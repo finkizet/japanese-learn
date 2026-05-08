@@ -1243,7 +1243,7 @@
       <div class="settings-card">
         <div class="settings-title" data-t="delay_title">Задержка</div>
         <div class="range-row">
-          <input type="range" id="answer-delay" min="0" max="900" value="700" step="50"
+          <input type="range" id="answer-delay" min="50" max="900" value="700" step="50"
                  oninput="document.getElementById('answer-delay-val').textContent=this.value+(lang==='ru'?'мс':'ms'); save()">
           <div class="range-val" id="answer-delay-val">700мс</div>
         </div>
@@ -1759,11 +1759,14 @@ function setSection(sec) {
 
 function getSectionData() {
   switch(currentSection) {
-    case 'hiragana': return { data: HIRAGANA,    offset: 0,           rowShort: ROW_SHORT_H   };
-    case 'katakana': return { data: KATAKANA,    offset: HIRA_HAN_END,rowShort: ROW_SHORT_K   };
-    case 'dakuten':  return { data: DAKUTEN_ALL, offset: HIRA_END,    rowShort: ROW_SHORT_DAK };
+    case 'hiragana': return [{ data: HIRAGANA,             offset: 0,            rowShort: ROW_SHORT_H   }];
+    case 'katakana': return [{ data: KATAKANA,             offset: HIRA_HAN_END, rowShort: ROW_SHORT_K   }];
+    case 'dakuten':  return [
+      { data: [...HIRAGANA_DAKUTEN, ...HIRAGANA_HANDAKUTEN], offset: HIRA_END,  rowShort: ROW_SHORT_DAK },
+      { data: [...KATAKANA_DAKUTEN, ...KATAKANA_HANDAKUTEN], offset: KATA_END,  rowShort: ROW_SHORT_DAK },
+    ];
   }
-  return { data: HIRAGANA, offset: 0, rowShort: ROW_SHORT_H };
+  return [{ data: HIRAGANA, offset: 0, rowShort: ROW_SHORT_H }];
 }
 
 function makeKanaBtn(i) {
@@ -1777,42 +1780,44 @@ function makeKanaBtn(i) {
 }
 
 function buildGrid() {
-  const { data, offset, rowShort } = getSectionData();
+  const blocks = getSectionData();
   const grid = document.getElementById('kana-grid');
   grid.innerHTML = '';
   grid.classList.toggle('compact', viewMode === 'compact');
 
-  if (viewMode === 'compact') {
-    const groups = [];
-    let cur = null;
-    data.forEach(([grp], di) => {
-      if (!cur || cur.grp !== grp) { cur = { grp, items: [] }; groups.push(cur); }
-      cur.items.push(offset + di);
-    });
-    groups.forEach(({ grp, items }) => {
-      const row = document.createElement('div');
-      row.className = 'kana-row';
-      const lbl = document.createElement('div');
-      lbl.className = 'kana-row-label';
-      lbl.textContent = rowShort[grp] || grp;
-      row.appendChild(lbl);
-      items.forEach(i => row.appendChild(makeKanaBtn(i)));
-      grid.appendChild(row);
-    });
-  } else {
-    let lastGroup = null;
-    data.forEach(([grp], di) => {
-      const i = offset + di;
-      if (grp !== lastGroup) {
+  blocks.forEach(({ data, offset, rowShort }) => {
+    if (viewMode === 'compact') {
+      const groups = [];
+      let cur = null;
+      data.forEach(([grp], di) => {
+        if (!cur || cur.grp !== grp) { cur = { grp, items: [] }; groups.push(cur); }
+        cur.items.push(offset + di);
+      });
+      groups.forEach(({ grp, items }) => {
+        const row = document.createElement('div');
+        row.className = 'kana-row';
         const lbl = document.createElement('div');
-        lbl.className = 'kana-group-label';
-        lbl.textContent = grp;
-        grid.appendChild(lbl);
-        lastGroup = grp;
-      }
-      grid.appendChild(makeKanaBtn(i));
-    });
-  }
+        lbl.className = 'kana-row-label';
+        lbl.textContent = rowShort[grp] || grp;
+        row.appendChild(lbl);
+        items.forEach(i => row.appendChild(makeKanaBtn(i)));
+        grid.appendChild(row);
+      });
+    } else {
+      let lastGroup = null;
+      data.forEach(([grp], di) => {
+        const i = offset + di;
+        if (grp !== lastGroup) {
+          const lbl = document.createElement('div');
+          lbl.className = 'kana-group-label';
+          lbl.textContent = grp;
+          grid.appendChild(lbl);
+          lastGroup = grp;
+        }
+        grid.appendChild(makeKanaBtn(i));
+      });
+    }
+  });
 }
 
 function toggleKana(i, btn) {
@@ -1823,10 +1828,12 @@ function toggleKana(i, btn) {
 }
 
 function toggleAll(on) {
-  const { data, offset } = getSectionData();
-  data.forEach((_, di) => {
-    const i = offset + di;
-    if (on) active.add(i); else active.delete(i);
+  const blocks = getSectionData();
+  blocks.forEach(({ data, offset }) => {
+    data.forEach((_, di) => {
+      const i = offset + di;
+      if (on) active.add(i); else active.delete(i);
+    });
   });
   presets[activePreset] = new Set(active);
   buildGrid(); savePresets();
@@ -1904,6 +1911,7 @@ let kbdMode = true;
 let kbdDisabledForSession = false;
 let quizStartTime = 0;
 let answerDelay = 700;
+let _kbdTimeoutId = null; // global timeout handle for keyboard input
 
 function toggleKbdMode() {
   kbdMode = !kbdMode;
@@ -1954,7 +1962,7 @@ function disableKbdForSession() {
 let xp = 0, level = 1, testsCompleted = 0, totalTestTime = 0;
 let kanaStats = {}; // { [idx]: { correct, total, totalTime, mastery } }
 
-function xpForLevel(lvl) { return 100 + (lvl - 1) * 10; }
+function xpForLevel(lvl) { return 200 + (lvl - 1) * 50; }
 
 function addXp(amount) {
   xp += amount;
@@ -2251,6 +2259,7 @@ function renderQ() {
   const idx = quizList[qIdx];
   const [, kana, romaji] = ALL_KANA[idx];
 
+  if (_kbdTimeoutId) { clearTimeout(_kbdTimeoutId); _kbdTimeoutId = null; }
   currentShowKana = Math.random() * 100 < kanaRatio;
   window._qStartTime = Date.now();
   const display = document.getElementById('q-display');
@@ -2277,24 +2286,54 @@ function renderQ() {
       `;
       const inp = document.getElementById('kbd-input');
       inp.focus();
+      let kbdWrong = false;
+      let kbdTimeoutId = null;
+
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !inp.disabled && inp.value.length > 0) {
+          kbdWrong = true;
+        }
+      });
+
+      function kbdFail() {
+        if (inp.disabled) return;
+        inp.disabled = true;
+        inp.classList.remove('wrong');
+        inp.classList.add('wrong');
+        inp.value = romaji;
+        const disBtn = document.getElementById('kbd-disable-quiz');
+        if (disBtn) disBtn.style.display = 'none';
+        _kbdTimeoutId = null;
+        answerKeyboard(false);
+      }
+
       inp.addEventListener('input', () => {
         const val = inp.value;
+        if (kbdTimeoutId) clearTimeout(kbdTimeoutId);
+
         if (romajiMatch(val, romaji)) {
           inp.classList.add('correct');
           inp.disabled = true;
-          document.getElementById('kbd-disable-quiz').style.display = 'none';
-          answerKeyboard(true);
+          if (kbdTimeoutId) clearTimeout(kbdTimeoutId);
+          _kbdTimeoutId = null;
+          const disBtn = document.getElementById('kbd-disable-quiz');
+          if (disBtn) disBtn.style.display = 'none';
+          answerKeyboard(!kbdWrong);
         } else if (val.length >= romaji.length + 1) {
+          kbdWrong = true;
           inp.classList.add('wrong');
           setTimeout(() => {
             if (!inp.disabled) { inp.classList.remove('wrong'); inp.value = ''; }
           }, 400);
+        } else if (val.length > 0) {
+          kbdTimeoutId = setTimeout(kbdFail, 1820);
+          _kbdTimeoutId = kbdTimeoutId;
         }
       });
     } else {
       // Button options mode (kana on top → romaji buttons)
       hint.textContent = t('hint_pick_romaji');
-      const pool = [...active].filter(i => i !== idx);
+      const pool = [...active].filter(i => i !== idx && ALL_KANA[i][2] !== romaji);
       const wrongs = shuffle(pool).slice(0, optCount - 1);
       const opts = shuffle([idx, ...wrongs]);
       const cols = optCount <= 4 ? Math.min(optCount, 2) : optCount <= 6 ? 3 : 4;
@@ -2315,7 +2354,7 @@ function renderQ() {
     display.innerHTML = `<div class="quiz-romaji">${romaji}</div>`;
     hint.textContent = t('hint_pick_kana');
 
-    const pool = [...active].filter(i => i !== idx);
+    const pool = [...active].filter(i => i !== idx && ALL_KANA[i][2] !== romaji);
     const wrongs = shuffle(pool).slice(0, optCount - 1);
     const opts = shuffle([idx, ...wrongs]);
 
@@ -2338,11 +2377,12 @@ function answerKeyboard(correct) {
   const timeSec = (Date.now() - window._qStartTime) / 1000;
   recordAnswer(quizList[qIdx], correct, timeSec);
   if (correct) score++;
+  const delay = correct ? answerDelay : 900;
   setTimeout(() => {
     qIdx++;
     if (qIdx >= totalQ) showResult();
     else renderQ();
-  }, answerDelay);
+  }, delay);
 }
 
 function answerBtn(btn, correct) {
