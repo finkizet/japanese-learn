@@ -2083,11 +2083,14 @@ function showProfile() {
   const th = Math.floor(totalTestTime / 3600);
   const tm = Math.floor((totalTestTime % 3600) / 60);
   const ts = totalTestTime % 60;
+  const _h = lang === 'ru' ? 'ч' : 'h';
+  const _m = lang === 'ru' ? 'м' : 'm';
+  const _s = lang === 'ru' ? 'с' : 's';
   const timeDisplay = th > 0
-    ? `${th}ч ${tm.toString().padStart(2,'0')}м`
+    ? `${th}${_h} ${tm.toString().padStart(2,'0')}${_m}`
     : tm > 0
-    ? `${tm}м ${ts.toString().padStart(2,'0')}с`
-    : `${ts}с`;
+    ? `${tm}${_m} ${ts.toString().padStart(2,'0')}${_s}`
+    : `${ts}${_s}`;
   document.getElementById('stat-time').textContent = timeDisplay;
 
   // xp bar
@@ -2326,7 +2329,7 @@ function renderQ() {
             if (!inp.disabled) { inp.classList.remove('wrong'); inp.value = ''; }
           }, 400);
         } else if (val.length > 0) {
-          kbdTimeoutId = setTimeout(kbdFail, 1820);
+          kbdTimeoutId = setTimeout(kbdFail, 2670);
           _kbdTimeoutId = kbdTimeoutId;
         }
       });
@@ -2420,9 +2423,11 @@ function showResult() {
 
   const mins = Math.floor(elapsed / 60);
   const secs = elapsed % 60;
+  const _m = lang === 'ru' ? 'м' : 'm';
+  const _s = lang === 'ru' ? 'с' : 's';
   const timeStr = mins > 0
-    ? `${mins}м ${secs.toString().padStart(2,'0')}с`
-    : `${secs}с`;
+    ? `${mins}${_m} ${secs.toString().padStart(2,'0')}${_s}`
+    : `${secs}${_s}`;
   document.getElementById('res-time').textContent = `⏱ ${timeStr}`;
 
   show('screen-result');
