@@ -1,7 +1,4 @@
-# japanese-learn
-my own project to learn japanese as I find convenient.
-
-Interactive trainer of the Japanese alphabet hiragana.
+Interactive trainer of the Japanese alphabet hiragana and katakana.
 
 ## 🌐 Website
 
@@ -13,3 +10,4 @@ Interactive trainer of the Japanese alphabet hiragana.
 - Configure the number of answer options (4–10)
 - Enable/disable individual characters
 - Keyboard input, type the romaji directly
+- Tracking statistics for each character: Accuracy, Avg Time, Mastery
